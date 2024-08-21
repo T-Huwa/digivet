@@ -55,6 +55,7 @@ class RegisteredUserController extends Controller
 
         //return redirect(route('dashboard', absolute: false));
         return Inertia::render('Auth/Register', [
+            'areas' => Area::all(),
             'success' => true,
             'message' => 'User added successfully!',
             'user' => $user

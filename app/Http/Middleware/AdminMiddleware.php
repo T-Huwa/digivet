@@ -16,10 +16,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->check() && $request->role === 'Admin') {
+        if ($request->user()->role === 'Admin') {
             return $next($request);
         }
 
-        abort(403); // Or wherever you want to redirect unauthorized users
+        abort(403);
     }
 }

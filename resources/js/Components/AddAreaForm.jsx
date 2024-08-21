@@ -12,9 +12,10 @@ import { useForm } from "@inertiajs/react";
 import InputError from "./InputError";
 import Modal from "./Modal";
 import SecondaryButton from "./SecondaryButton";
+import PrimaryButton from "./PrimaryButton";
 
 const AddAreaForm = () => {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         district_id: "",
     });
@@ -65,7 +66,7 @@ const AddAreaForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Send the request to the server
-        post("/areas", {
+        post(route("areas.add"), {
             onSuccess: (response) => {
                 // Log the success response
                 console.log("Success:", response.props.message);
@@ -81,8 +82,7 @@ const AddAreaForm = () => {
             onFinish() {
                 //alert("Finished!");
                 openModal();
-                setData("name", "");
-                setData("district_id", "");
+                reset();
             },
         });
     };
@@ -124,14 +124,13 @@ const AddAreaForm = () => {
                 <InputError message={errors.name} className="mt-2" />
             </div>
 
-            <Button
+            <PrimaryButton
                 type="submit"
                 variant="contained"
-                color="primary"
                 disabled={processing}
             >
                 Add Area
-            </Button>
+            </PrimaryButton>
 
             <Modal show={modalOpen} onClose={closeModal}>
                 <Box className="p-6">

@@ -10,8 +10,8 @@ const AddArea = () => {
 
             <Paper
                 elevation={4}
-                className="bg-white p-6 md:p-16"
-                sx={{ mx: "auto", width: 1, maxWidth: "sm" }}
+                className="p-2 md:p-6 m-auto"
+                sx={{ mx: "auto", width: 1, maxWidth: 400 }}
             >
                 <Typography variant="h4">Add New Area</Typography>
                 <AddAreaForm />

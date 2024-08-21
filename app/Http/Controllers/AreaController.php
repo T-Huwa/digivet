@@ -53,7 +53,7 @@ class AreaController extends Controller
             'district_id' => $request->district_id,
         ]);
 
-         return Inertia::render('AddArea', [
+         return Inertia::render('Admin/Areas', [
              'success' => true,
              'message' => 'Area added successfully!',
              'area' => $area
@@ -93,8 +93,10 @@ class AreaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(area $area)
+    public function destroy($id)
     {
-        //
+        $area = Area::findOrFail($id);
+        $area->delete();
+        return redirect(route('areas'));
     }
 }

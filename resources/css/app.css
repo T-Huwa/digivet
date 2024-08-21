@@ -3,3 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#nprogress .bar {
+    z-index: 5101 !important;
+}

@@ -50,12 +50,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/{id}/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/areas', [AreaController::class, 'index'])->name('areas');
+Route::middleware('auth', 'admin')->prefix('areas')->group(function(){
+    Route::get('/', [AreaController::class, 'index'])->name('areas');
+    Route::get('add', function () {
+        return Inertia::render('Admin/AddArea');
+    })->middleware(['auth'])->name('areas.add');
 
-Route::get('/areas/add', function () {
-    return Inertia::render('Admin/AddArea');
-})->middleware(['auth', 'verified'])->name('areas.add');
-
-Route::post('/areas', [AreaController::class, 'store']);
+    Route::post('/add', [AreaController::class, 'store'])->name('areas.add');
+    Route::delete('{id}/delete', [AreaController::class, 'destroy']);
+});
 
 require __DIR__.'/auth.php';
