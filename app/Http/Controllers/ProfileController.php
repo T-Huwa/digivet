@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,21 +44,17 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy($id)
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
 
-        $user = $request->user();
+        $user = User::findOrFail($id);
 
-        Auth::logout();
+        if (!Auth::user()->role==='Admin') {
+            return Redirect::back()->withErrors(['Unauthorized action']);
+        }
 
         $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return redirect()->back();
     }
 }

@@ -11,19 +11,21 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import Label from "@/Components/label";
 import Iconify from "@/Components/iconify";
+import axios from "axios";
+import { router } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
+    id,
     selected,
     name,
     avatarUrl,
-    company,
+    area_name,
     role,
     isVerified,
-    status,
+    email,
     handleClick,
 }) {
     const [open, setOpen] = useState(null);
@@ -34,6 +36,24 @@ export default function UserTableRow({
 
     const handleCloseMenu = () => {
         setOpen(null);
+    };
+
+    const handleDeleteUser = async () => {
+        if (!window.confirm("Are you sure you want to delete this account?")) {
+            return; // Abort the deletion if user cancels
+        }
+
+        // Post the delete request
+        router.delete(route("profile.destroy", id), {
+            onSuccess: () => {
+                // Handle success (e.g., redirect, show a success message)
+                alert("User Deleted!");
+            },
+            onError: (error) => {
+                // Handle error (e.g., show an error message)
+                console.error("Failed to delete user:", error);
+            },
+        });
     };
 
     return (
@@ -55,22 +75,14 @@ export default function UserTableRow({
                         </Typography>
                     </Stack>
                 </TableCell>
-
-                <TableCell>{company}</TableCell>
+                <TableCell>{email}</TableCell>
 
                 <TableCell>{role}</TableCell>
 
                 <TableCell align="center">
                     {isVerified ? "Yes" : "No"}
                 </TableCell>
-
-                <TableCell>
-                    <Label
-                        color={(status === "banned" && "error") || "success"}
-                    >
-                        {status}
-                    </Label>
-                </TableCell>
+                <TableCell>{area_name}</TableCell>
 
                 <TableCell align="right">
                     <IconButton onClick={handleOpenMenu}>
@@ -95,7 +107,7 @@ export default function UserTableRow({
                 </MenuItem>
 
                 <MenuItem
-                    onClick={handleCloseMenu}
+                    onClick={handleDeleteUser}
                     sx={{ color: "error.main" }}
                 >
                     <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
@@ -108,7 +120,7 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
     avatarUrl: PropTypes.any,
-    company: PropTypes.any,
+    area_name: PropTypes.any,
     handleClick: PropTypes.func,
     isVerified: PropTypes.any,
     name: PropTypes.any,

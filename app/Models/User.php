@@ -27,12 +27,12 @@ class User extends Authenticatable
 
     public function area()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Area::class, 'area_id');
     }
 
     public function inventory()
     {
-        return $this->hasOne(Inventory::class);
+        return $this->hasOne(Inventory::class,);
     }
 
     public function appointments()

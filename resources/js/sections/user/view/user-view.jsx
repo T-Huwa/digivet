@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
-import { users } from "@/_mock/user";
+//import { users } from "@/_mock/user";
 
 import Iconify from "@/Components/iconify";
 import Scrollbar from "@/Components/scrollbar";
@@ -22,10 +22,12 @@ import TableEmptyRows from "../table-empty-rows";
 import UserTableToolbar from "../user-table-toolbar";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 import { Paper } from "@mui/material";
+import { Link } from "@inertiajs/react";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 // ----------------------------------------------------------------------
 
-export default function UserPage() {
+export default function UserPage({ users }) {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState("asc");
@@ -105,13 +107,11 @@ export default function UserPage() {
             >
                 <Typography variant="h4">Users</Typography>
 
-                <Button
-                    variant="contained"
-                    color="inherit"
-                    startIcon={<Iconify icon="eva:plus-fill" />}
-                >
-                    New User
-                </Button>
+                <PrimaryButton>
+                    <Link href="/register">
+                        <Iconify icon="eva:plus-fill" />
+                    </Link>
+                </PrimaryButton>
             </Stack>
             <Paper elevation={4}>
                 <Card>
@@ -133,14 +133,14 @@ export default function UserPage() {
                                     onSelectAllClick={handleSelectAllClick}
                                     headLabel={[
                                         { id: "name", label: "Name" },
-                                        { id: "company", label: "Company" },
+                                        { id: "email", label: "Email" },
                                         { id: "role", label: "Role" },
                                         {
                                             id: "isVerified",
                                             label: "Verified",
                                             align: "center",
                                         },
-                                        { id: "status", label: "Status" },
+                                        { id: "area", label: "Area" },
                                         { id: "" },
                                     ]}
                                 />
@@ -152,13 +152,22 @@ export default function UserPage() {
                                         )
                                         .map((row) => (
                                             <UserTableRow
+                                                id={row.id}
                                                 key={row.id}
                                                 name={row.name}
                                                 role={row.role}
-                                                status={row.status}
-                                                company={row.company}
-                                                avatarUrl={row.avatarUrl}
-                                                isVerified={row.isVerified}
+                                                email={row.email}
+                                                area_name={
+                                                    row.area_name +
+                                                    ", " +
+                                                    row.district_name
+                                                }
+                                                avatarUrl={
+                                                    row.profile_photo_url
+                                                }
+                                                isVerified={
+                                                    row.email_verified_at
+                                                }
                                                 selected={
                                                     selected.indexOf(
                                                         row.name

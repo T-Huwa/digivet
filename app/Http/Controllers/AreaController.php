@@ -15,7 +15,18 @@ class AreaController extends Controller
      */
     public function index()
     {
-        //
+        $areas = Area::with('district:id,district_name')->get();
+
+        return Inertia::render('Admin/Areas', [
+            'areas' => $areas->map(function ($area) {
+                return [
+                    'id' => $area->id,
+                    'name' => $area->name,
+                    'district_name' => $area->district->district_name,
+                ];
+            }),
+        ]);
+
     }
 
     /**
@@ -42,7 +53,7 @@ class AreaController extends Controller
             'district_id' => $request->district_id,
         ]);
 
-         return Inertia::render('Welcome', [
+         return Inertia::render('AddArea', [
              'success' => true,
              'message' => 'Area added successfully!',
              'area' => $area

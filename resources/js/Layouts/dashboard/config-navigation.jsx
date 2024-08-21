@@ -1,3 +1,4 @@
+import TerrainIcon from "@mui/icons-material/Terrain";
 import SvgColor from "@/Components/svg-color";
 
 // ----------------------------------------------------------------------
@@ -12,32 +13,37 @@ const icon = (name) => (
 const navConfig = [
     {
         title: "dashboard",
-        path: "/",
+        path: "dashboard",
         icon: icon("ic_analytics"),
     },
     {
         title: "users",
-        path: "/",
+        path: "users",
         icon: icon("ic_user"),
     },
     {
         title: "Inventory",
-        path: "/",
+        path: "users",
         icon: icon("ic_cart"),
     },
     {
+        title: "Areas",
+        path: "areas",
+        icon: <TerrainIcon />,
+    },
+    {
         title: "case studies",
-        path: "/blog",
+        path: "users",
         icon: icon("ic_blog"),
     },
     {
         title: "login",
-        path: "/login",
+        path: "users",
         icon: icon("ic_lock"),
     },
     {
         title: "Not found",
-        path: "/404",
+        path: "dashboard",
         icon: icon("ic_disabled"),
     },
 ];

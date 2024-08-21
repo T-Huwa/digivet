@@ -10,7 +10,6 @@ import Typography from "@mui/material/Typography";
 import ListItemButton from "@mui/material/ListItemButton";
 
 import { usePathname } from "@/routes/hooks";
-import { RouterLink } from "@/routes/components";
 
 import { useResponsive } from "@/hooks/use-responsive";
 
@@ -21,6 +20,7 @@ import Scrollbar from "@/Components/scrollbar";
 
 import { NAV } from "./config-layout";
 import navConfig from "./config-navigation";
+import { Link } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
@@ -140,8 +140,8 @@ function NavItem({ item }) {
 
     return (
         <ListItemButton
-            component={RouterLink}
-            href={item.path}
+            component={Link}
+            href={route(item.path)}
             sx={{
                 minHeight: 44,
                 borderRadius: 0.75,

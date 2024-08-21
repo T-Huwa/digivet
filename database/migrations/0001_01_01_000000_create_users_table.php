@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['Admin', 'Extension Worker', 'Farmer']);
+            $table->enum('role', ['Admin', 'Extension Worker', 'Farmer'])->default('Farmer');
             $table->foreignId('district_id')->constrained('districts')->onDelete('cascade');
             $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
             $table->string('profile_photo_url')->nullable();

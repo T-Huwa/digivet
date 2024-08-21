@@ -17,7 +17,7 @@ import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { useState } from "react";
 
-export default function Register() {
+export default function Register({ areas }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
@@ -106,147 +106,147 @@ export default function Register() {
         { id: 28, name: "Neno" },
     ];
 
-    const areas = [
-        // Chitipa
-        { id: 1, name: "Wenya", district_id: 1 },
-        { id: 2, name: "Misuku", district_id: 1 },
-        { id: 3, name: "Ifumbo", district_id: 1 },
+    // const areas = [
+    //     // Chitipa
+    //     { id: 1, name: "Wenya", district_id: 1 },
+    //     { id: 2, name: "Misuku", district_id: 1 },
+    //     { id: 3, name: "Ifumbo", district_id: 1 },
 
-        // Karonga
-        { id: 4, name: "Wovwe", district_id: 2 },
-        { id: 5, name: "Nyungwe", district_id: 2 },
-        { id: 6, name: "Mpata", district_id: 2 },
+    //     // Karonga
+    //     { id: 4, name: "Wovwe", district_id: 2 },
+    //     { id: 5, name: "Nyungwe", district_id: 2 },
+    //     { id: 6, name: "Mpata", district_id: 2 },
 
-        // Rumphi
-        { id: 7, name: "Hewe", district_id: 3 },
-        { id: 8, name: "Bolero", district_id: 3 },
-        { id: 9, name: "Chiweta", district_id: 3 },
+    //     // Rumphi
+    //     { id: 7, name: "Hewe", district_id: 3 },
+    //     { id: 8, name: "Bolero", district_id: 3 },
+    //     { id: 9, name: "Chiweta", district_id: 3 },
 
-        // Mzimba
-        { id: 10, name: "Embangweni", district_id: 4 },
-        { id: 11, name: "Ekwendeni", district_id: 4 },
-        { id: 12, name: "Mpherembe", district_id: 4 },
+    //     // Mzimba
+    //     { id: 10, name: "Embangweni", district_id: 4 },
+    //     { id: 11, name: "Ekwendeni", district_id: 4 },
+    //     { id: 12, name: "Mpherembe", district_id: 4 },
 
-        // Nkhata Bay
-        { id: 13, name: "Chintheche", district_id: 5 },
-        { id: 14, name: "Usisya", district_id: 5 },
-        { id: 15, name: "Mpamba", district_id: 5 },
+    //     // Nkhata Bay
+    //     { id: 13, name: "Chintheche", district_id: 5 },
+    //     { id: 14, name: "Usisya", district_id: 5 },
+    //     { id: 15, name: "Mpamba", district_id: 5 },
 
-        // Likoma
-        { id: 16, name: "Likoma", district_id: 6 },
-        { id: 17, name: "Chizumulu", district_id: 6 },
-        { id: 18, name: "Mbamba", district_id: 6 },
+    //     // Likoma
+    //     { id: 16, name: "Likoma", district_id: 6 },
+    //     { id: 17, name: "Chizumulu", district_id: 6 },
+    //     { id: 18, name: "Mbamba", district_id: 6 },
 
-        // Kasungu
-        { id: 19, name: "Chulu", district_id: 7 },
-        { id: 20, name: "Lifupa", district_id: 7 },
-        { id: 21, name: "Kamboni", district_id: 7 },
+    //     // Kasungu
+    //     { id: 19, name: "Chulu", district_id: 7 },
+    //     { id: 20, name: "Lifupa", district_id: 7 },
+    //     { id: 21, name: "Kamboni", district_id: 7 },
 
-        // Nkhotakota
-        { id: 22, name: "Nkhunga", district_id: 8 },
-        { id: 23, name: "Chididi", district_id: 8 },
-        { id: 24, name: "Liwonde", district_id: 8 },
+    //     // Nkhotakota
+    //     { id: 22, name: "Nkhunga", district_id: 8 },
+    //     { id: 23, name: "Chididi", district_id: 8 },
+    //     { id: 24, name: "Liwonde", district_id: 8 },
 
-        // Ntchisi
-        { id: 25, name: "Malomo", district_id: 9 },
-        { id: 26, name: "Kachere", district_id: 9 },
-        { id: 27, name: "Mphonde", district_id: 9 },
+    //     // Ntchisi
+    //     { id: 25, name: "Malomo", district_id: 9 },
+    //     { id: 26, name: "Kachere", district_id: 9 },
+    //     { id: 27, name: "Mphonde", district_id: 9 },
 
-        // Dowa
-        { id: 28, name: "Dzaleka", district_id: 10 },
-        { id: 29, name: "Mponela", district_id: 10 },
-        { id: 30, name: "Madisi", district_id: 10 },
+    //     // Dowa
+    //     { id: 28, name: "Dzaleka", district_id: 10 },
+    //     { id: 29, name: "Mponela", district_id: 10 },
+    //     { id: 30, name: "Madisi", district_id: 10 },
 
-        // Mchinji
-        { id: 31, name: "Mkanda", district_id: 11 },
-        { id: 32, name: "Mavwere", district_id: 11 },
-        { id: 33, name: "Kawere", district_id: 11 },
+    //     // Mchinji
+    //     { id: 31, name: "Mkanda", district_id: 11 },
+    //     { id: 32, name: "Mavwere", district_id: 11 },
+    //     { id: 33, name: "Kawere", district_id: 11 },
 
-        // Lilongwe
-        { id: 34, name: "Area 25", district_id: 12 },
-        { id: 35, name: "Area 49", district_id: 12 },
-        { id: 36, name: "Mponela", district_id: 12 },
+    //     // Lilongwe
+    //     { id: 34, name: "Area 25", district_id: 12 },
+    //     { id: 35, name: "Area 49", district_id: 12 },
+    //     { id: 36, name: "Mponela", district_id: 12 },
 
-        // Salima
-        { id: 37, name: "Senga Bay", district_id: 13 },
-        { id: 38, name: "Kaphatenga", district_id: 13 },
-        { id: 39, name: "Chipoka", district_id: 13 },
+    //     // Salima
+    //     { id: 37, name: "Senga Bay", district_id: 13 },
+    //     { id: 38, name: "Kaphatenga", district_id: 13 },
+    //     { id: 39, name: "Chipoka", district_id: 13 },
 
-        // Dedza
-        { id: 40, name: "Mayani", district_id: 14 },
-        { id: 41, name: "Bembeke", district_id: 14 },
-        { id: 42, name: "Mtakataka", district_id: 14 },
+    //     // Dedza
+    //     { id: 40, name: "Mayani", district_id: 14 },
+    //     { id: 41, name: "Bembeke", district_id: 14 },
+    //     { id: 42, name: "Mtakataka", district_id: 14 },
 
-        // Ntcheu
-        { id: 43, name: "Lizulu", district_id: 15 },
-        { id: 44, name: "Sharpevale", district_id: 15 },
-        { id: 45, name: "Bwanje", district_id: 15 },
+    //     // Ntcheu
+    //     { id: 43, name: "Lizulu", district_id: 15 },
+    //     { id: 44, name: "Sharpevale", district_id: 15 },
+    //     { id: 45, name: "Bwanje", district_id: 15 },
 
-        // Balaka
-        { id: 46, name: "Chingeni", district_id: 16 },
-        { id: 47, name: "Nkhonde", district_id: 16 },
-        { id: 48, name: "Manjawira", district_id: 16 },
+    //     // Balaka
+    //     { id: 46, name: "Chingeni", district_id: 16 },
+    //     { id: 47, name: "Nkhonde", district_id: 16 },
+    //     { id: 48, name: "Manjawira", district_id: 16 },
 
-        // Mangochi
-        { id: 49, name: "Monkey Bay", district_id: 17 },
-        { id: 50, name: "Malindi", district_id: 17 },
-        { id: 51, name: "Namwera", district_id: 17 },
+    //     // Mangochi
+    //     { id: 49, name: "Monkey Bay", district_id: 17 },
+    //     { id: 50, name: "Malindi", district_id: 17 },
+    //     { id: 51, name: "Namwera", district_id: 17 },
 
-        // Machinga
-        { id: 52, name: "Ntaja", district_id: 18 },
-        { id: 53, name: "Liwonde", district_id: 18 },
-        { id: 54, name: "Ntumbi", district_id: 18 },
+    //     // Machinga
+    //     { id: 52, name: "Ntaja", district_id: 18 },
+    //     { id: 53, name: "Liwonde", district_id: 18 },
+    //     { id: 54, name: "Ntumbi", district_id: 18 },
 
-        // Zomba
-        { id: 55, name: "Chancellor College", district_id: 19 },
-        { id: 56, name: "Jali", district_id: 19 },
-        { id: 57, name: "Thondwe", district_id: 19 },
+    //     // Zomba
+    //     { id: 55, name: "Chancellor College", district_id: 19 },
+    //     { id: 56, name: "Jali", district_id: 19 },
+    //     { id: 57, name: "Thondwe", district_id: 19 },
 
-        // Chiradzulu
-        { id: 58, name: "Chiradzulu Boma", district_id: 20 },
-        { id: 59, name: "Namitambo", district_id: 20 },
-        { id: 60, name: "Ndunde", district_id: 20 },
+    //     // Chiradzulu
+    //     { id: 58, name: "Chiradzulu Boma", district_id: 20 },
+    //     { id: 59, name: "Namitambo", district_id: 20 },
+    //     { id: 60, name: "Ndunde", district_id: 20 },
 
-        // Blantyre
-        { id: 61, name: "Ndirande", district_id: 21 },
-        { id: 62, name: "Chilomoni", district_id: 21 },
-        { id: 63, name: "Limbe", district_id: 21 },
+    //     // Blantyre
+    //     { id: 61, name: "Ndirande", district_id: 21 },
+    //     { id: 62, name: "Chilomoni", district_id: 21 },
+    //     { id: 63, name: "Limbe", district_id: 21 },
 
-        // Mwanza
-        { id: 64, name: "Mwanza Boma", district_id: 22 },
-        { id: 65, name: "Lundu", district_id: 22 },
-        { id: 66, name: "Neno Boma", district_id: 22 },
+    //     // Mwanza
+    //     { id: 64, name: "Mwanza Boma", district_id: 22 },
+    //     { id: 65, name: "Lundu", district_id: 22 },
+    //     { id: 66, name: "Neno Boma", district_id: 22 },
 
-        // Thyolo
-        { id: 67, name: "Goliati", district_id: 23 },
-        { id: 68, name: "Bvumbwe", district_id: 23 },
-        { id: 69, name: "Masambanjati", district_id: 23 },
+    //     // Thyolo
+    //     { id: 67, name: "Goliati", district_id: 23 },
+    //     { id: 68, name: "Bvumbwe", district_id: 23 },
+    //     { id: 69, name: "Masambanjati", district_id: 23 },
 
-        // Mulanje
-        { id: 70, name: "Mulanje Boma", district_id: 24 },
-        { id: 71, name: "Chitakale", district_id: 24 },
-        { id: 72, name: "Limbuli", district_id: 24 },
+    //     // Mulanje
+    //     { id: 70, name: "Mulanje Boma", district_id: 24 },
+    //     { id: 71, name: "Chitakale", district_id: 24 },
+    //     { id: 72, name: "Limbuli", district_id: 24 },
 
-        // Phalombe
-        { id: 73, name: "Mpyupyu", district_id: 25 },
-        { id: 74, name: "Chiringa", district_id: 25 },
-        { id: 75, name: "Mwanza", district_id: 25 },
+    //     // Phalombe
+    //     { id: 73, name: "Mpyupyu", district_id: 25 },
+    //     { id: 74, name: "Chiringa", district_id: 25 },
+    //     { id: 75, name: "Mwanza", district_id: 25 },
 
-        // Chikwawa
-        { id: 76, name: "Nchalo", district_id: 26 },
-        { id: 77, name: "Ngabu", district_id: 26 },
-        { id: 78, name: "Bangula", district_id: 26 },
+    //     // Chikwawa
+    //     { id: 76, name: "Nchalo", district_id: 26 },
+    //     { id: 77, name: "Ngabu", district_id: 26 },
+    //     { id: 78, name: "Bangula", district_id: 26 },
 
-        // Nsanje
-        { id: 79, name: "Nsanje Boma", district_id: 27 },
-        { id: 80, name: "Fatima", district_id: 27 },
-        { id: 81, name: "Bangula", district_id: 27 },
+    //     // Nsanje
+    //     { id: 79, name: "Nsanje Boma", district_id: 27 },
+    //     { id: 80, name: "Fatima", district_id: 27 },
+    //     { id: 81, name: "Bangula", district_id: 27 },
 
-        // Neno
-        { id: 82, name: "Ligowe", district_id: 28 },
-        { id: 83, name: "Lisungwi", district_id: 28 },
-        { id: 84, name: "Chiwale", district_id: 28 },
-    ];
+    //     // Neno
+    //     { id: 82, name: "Ligowe", district_id: 28 },
+    //     { id: 83, name: "Lisungwi", district_id: 28 },
+    //     { id: 84, name: "Chiwale", district_id: 28 },
+    // ];
 
     const filteredAreas = areas.filter(
         (area) => area.district_id === data.district_id
