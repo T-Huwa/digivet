@@ -9,8 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import { account } from "@/_mock/account";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +31,7 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+    const account = usePage().props.auth.user;
     const [open, setOpen] = useState(null);
 
     const handleOpen = (event) => {
@@ -57,8 +57,8 @@ export default function AccountPopover() {
                 }}
             >
                 <Avatar
-                    src={account.photoURL}
-                    alt={account.displayName}
+                    src="/assets/images/avatars/avatar_1.jpg"
+                    alt={account.name}
                     sx={{
                         width: 36,
                         height: 36,
@@ -66,7 +66,7 @@ export default function AccountPopover() {
                             `solid 2px ${theme.palette.background.default}`,
                     }}
                 >
-                    {account.displayName.charAt(0).toUpperCase()}
+                    {account.name.charAt(0).toUpperCase()}
                 </Avatar>
             </IconButton>
 
@@ -87,7 +87,7 @@ export default function AccountPopover() {
             >
                 <Box sx={{ my: 1.5, px: 2 }}>
                     <Typography variant="subtitle2" noWrap>
-                        {account.displayName}
+                        {account.name}
                     </Typography>
                     <Typography
                         variant="body2"
@@ -100,24 +100,36 @@ export default function AccountPopover() {
 
                 <Divider sx={{ borderStyle: "dashed" }} />
 
-                {MENU_OPTIONS.map((option) => (
-                    <MenuItem key={option.label} onClick={handleClose}>
-                        {option.label}
-                    </MenuItem>
-                ))}
+                <MenuItem onClick={handleClose}>
+                    <Link
+                        className="w-full"
+                        href={route("profile.edit")}
+                        as="button"
+                        sx={{
+                            typography: "body2",
+                            color: "error.main",
+                        }}
+                    >
+                        Profile
+                    </Link>
+                </MenuItem>
 
-                <Divider sx={{ borderStyle: "dashed", m: 0 }} />
-
-                <Link
-                    disableRipple
-                    disableTouchRipple
-                    href={route("logout")}
-                    method="post"
-                    as="button"
-                    sx={{ typography: "body2", color: "error.main", py: 1.5 }}
-                >
-                    Logout
-                </Link>
+                <MenuItem onClick={handleClose}>
+                    <Link
+                        disableRipple
+                        disableTouchRipple
+                        className="w-full"
+                        href={route("logout")}
+                        method="post"
+                        as="button"
+                        sx={{
+                            typography: "body2",
+                            color: "error.main",
+                        }}
+                    >
+                        Logout
+                    </Link>
+                </MenuItem>
             </Popover>
         </>
     );

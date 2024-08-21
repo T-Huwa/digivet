@@ -1,12 +1,14 @@
-import AuthenticatedLayout from "@/layouts copy/AuthenticatedLayout";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 import { Head } from "@inertiajs/react";
+import DashboardLayout from "@/Layouts/dashboard";
+import AvatarGrid from "@/Components/AvatarGrid";
+import SecondaryButton from "@/Components/SecondaryButton";
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (
-        <AuthenticatedLayout
+        <DashboardLayout
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
@@ -31,10 +33,11 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                     </div>
 
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <DeleteUserForm className="max-w-xl" />
+                        <AvatarGrid className="max-w-xl" />
+                        <SecondaryButton className="mt-4">Save</SecondaryButton>
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }

@@ -13,19 +13,18 @@ import { usePathname } from "@/routes/hooks";
 
 import { useResponsive } from "@/hooks/use-responsive";
 
-import { account } from "@/_mock/account";
-
 import Logo from "@/Components/logo";
 import Scrollbar from "@/Components/scrollbar";
 
 import { NAV } from "./config-layout";
 import navConfig from "./config-navigation";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
     const pathname = usePathname();
+    const account = usePage().props.auth.user;
 
     const upLg = useResponsive("up", "lg");
 
@@ -33,7 +32,6 @@ export default function Nav({ openNav, onCloseNav }) {
         if (openNav) {
             onCloseNav();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
 
     const renderAccount = (
@@ -49,12 +47,10 @@ export default function Nav({ openNav, onCloseNav }) {
                 bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
             }}
         >
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src="/assets/images/avatars/avatar_1.jpg" alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle2">
-                    {account.displayName}
-                </Typography>
+                <Typography variant="subtitle2">{account.name},</Typography>
 
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
                     {account.role}

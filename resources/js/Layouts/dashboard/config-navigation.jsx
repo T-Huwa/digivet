@@ -48,4 +48,22 @@ const navConfig = [
     },
 ];
 
+const adminNav = [
+    {
+        title: "dashboard",
+        path: "admin.dashboard",
+        icon: icon("ic_analytics"),
+    },
+    {
+        title: "users",
+        path: "admin.users",
+        icon: icon("ic_user"),
+    },
+    {
+        title: "Areas",
+        path: "admin.areas",
+        icon: <TerrainIcon />,
+    },
+];
+
 export default navConfig;
