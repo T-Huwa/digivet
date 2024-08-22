@@ -9,7 +9,7 @@ class appointment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['farmer_id', 'extension_worker_id', 'appointment_date', 'description', 'status'];
+    protected $fillable = ['farmer_id', 'extension_worker_id','area_id', 'appointment_date', 'description', 'status'];
 
     public function farmer()
     {
@@ -19,5 +19,10 @@ class appointment extends Model
     public function extensionWorker()
     {
         return $this->belongsTo(User::class, 'extension_worker_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
     }
 }

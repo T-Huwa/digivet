@@ -17,9 +17,9 @@ export default function DataTable({ rows, columns }) {
                 sx={{
                     boxShadow: 2,
                     border: 2,
-                    borderColor: "rgb(120,250,120)",
+                    borderColor: "rgb(200,200,200)",
                     "& .MuiDataGrid-cell:hover": {
-                        color: "rgb(120,250,120)",
+                        color: "rgb(140,140,140)",
                     },
                 }}
             />

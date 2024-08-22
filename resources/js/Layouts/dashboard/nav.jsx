@@ -8,6 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import { alpha } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import ListItemButton from "@mui/material/ListItemButton";
+import TerrainIcon from "@mui/icons-material/Terrain";
 
 import { usePathname } from "@/routes/hooks";
 
@@ -17,14 +18,97 @@ import Logo from "@/Components/logo";
 import Scrollbar from "@/Components/scrollbar";
 
 import { NAV } from "./config-layout";
-import navConfig from "./config-navigation";
 import { Link, usePage } from "@inertiajs/react";
+import SvgColor from "@/Components/svg-color";
+import { DateRange } from "@mui/icons-material";
 
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
     const pathname = usePathname();
+
     const account = usePage().props.auth.user;
+
+    const icon = (name) => (
+        <SvgColor
+            src={`/assets/icons/navbar/${name}.svg`}
+            sx={{ width: 1, height: 1 }}
+        />
+    );
+
+    const EonavConfig = [
+        {
+            title: "dashboard",
+            path: "dashboard",
+            icon: icon("ic_analytics"),
+        },
+        {
+            title: "My Farmers",
+            path: "users",
+            icon: icon("ic_user"),
+        },
+        {
+            title: "My Area",
+            path: "areas",
+            icon: <TerrainIcon />,
+        },
+        {
+            title: "Appointments",
+            path: "appointments.get",
+            icon: <DateRange />,
+        },
+        {
+            title: "Case studies",
+            path: "users",
+            icon: icon("ic_blog"),
+        },
+    ];
+
+    const adminNav = [
+        {
+            title: "dashboard",
+            path: "admin.dashboard",
+            icon: icon("ic_analytics"),
+        },
+        {
+            title: "users",
+            path: "admin.users",
+            icon: icon("ic_user"),
+        },
+        {
+            title: "Areas",
+            path: "admin.areas",
+            icon: <TerrainIcon />,
+        },
+    ];
+
+    const farmerNavConfig = [
+        {
+            title: "dashboard",
+            path: "dashboard",
+            icon: icon("ic_analytics"),
+        },
+        {
+            title: "Inventory",
+            path: "users",
+            icon: icon("ic_cart"),
+        },
+        {
+            title: "My Area",
+            path: "areas",
+            icon: <TerrainIcon />,
+        },
+        {
+            title: "Case studies",
+            path: "users",
+            icon: icon("ic_blog"),
+        },
+        {
+            title: "Appointments",
+            path: "appointments.get",
+            icon: <DateRange />,
+        },
+    ];
 
     const upLg = useResponsive("up", "lg");
 
@@ -61,9 +145,18 @@ export default function Nav({ openNav, onCloseNav }) {
 
     const renderMenu = (
         <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-            {navConfig.map((item) => (
-                <NavItem key={item.title} item={item} />
-            ))}
+            {account.role === "Farmer" &&
+                farmerNavConfig.map((item) => (
+                    <NavItem key={item.title} item={item} />
+                ))}
+            {account.role === "Admin" &&
+                adminNav.map((item) => (
+                    <NavItem key={item.title} item={item} />
+                ))}
+            {account.role === "Extension Worker" &&
+                EonavConfig.map((item) => (
+                    <NavItem key={item.title} item={item} />
+                ))}
         </Stack>
     );
 

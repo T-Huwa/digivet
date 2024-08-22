@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('farmer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('extension_worker_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
             $table->dateTime('appointment_date');
             $table->text('description')->nullable();
-            $table->enum('status', ['Pending', 'Completed', 'Cancelled'])->default('Pending');
+            $table->enum('status', ['Requested','Pending', 'Completed', 'Cancelled'])->default('Pending');
             $table->timestamps();
         });
     }

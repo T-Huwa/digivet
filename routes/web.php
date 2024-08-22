@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ProfileController;
+use App\Models\appointment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -58,6 +60,13 @@ Route::middleware('auth', 'admin')->prefix('areas')->group(function(){
 
     Route::post('/add', [AreaController::class, 'store'])->name('areas.add');
     Route::delete('{id}/delete', [AreaController::class, 'destroy']);
+});
+
+Route::middleware('auth')->prefix('appointments')->group(function () {
+    Route::post('book', [AppointmentController::class, 'store'])->name('appointments.create');
+    Route::get('book', [AppointmentController::class, 'create'])->name('appointments.create');
+    Route::post('update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.update.status');
+    Route::get('/', [AppointmentController::class, 'index'])->name('appointments.get');
 });
 
 require __DIR__.'/auth.php';
