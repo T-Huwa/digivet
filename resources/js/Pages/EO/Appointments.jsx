@@ -1,6 +1,6 @@
 import DataTable from "@/Components/DataTable";
 import DashboardLayout from "@/Layouts/dashboard";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import React, { useState } from "react";
@@ -8,10 +8,22 @@ import { Close, OpenInNew } from "@mui/icons-material";
 import axios from "axios";
 import DangerButton from "@/Components/DangerButton";
 import PrimaryButton from "@/Components/PrimaryButton";
+import { useEffect } from "react";
+import { usePage } from "@inertiajs/react";
 
-export default function Appointments({ appointments }) {
+export default function Appointments({ appointments, selectedAppointment }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalAppointment, setModalAppointment] = useState(null);
+
+    console.log(usePage().props);
+
+    useEffect(() => {
+        if (selectedAppointment) {
+            setModalAppointment(selectedAppointment);
+            setModalOpen(true);
+        }
+    }, []);
+
     const columns = [
         { field: "id", headerName: "ID", width: 90 },
         {

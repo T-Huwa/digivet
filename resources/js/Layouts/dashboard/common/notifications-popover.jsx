@@ -22,6 +22,9 @@ import { fToNow } from "@/utils/format-time";
 
 import Iconify from "@/Components/iconify";
 import Scrollbar from "@/Components/scrollbar";
+import { useEffect } from "react";
+import { router } from "@inertiajs/react";
+import axios from "axios";
 
 // ----------------------------------------------------------------------
 
@@ -74,10 +77,29 @@ const NOTIFICATIONS = [
 ];
 
 export default function NotificationsPopover() {
-    const [notifications, setNotifications] = useState(NOTIFICATIONS);
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        const fetchNotifications = async (appointmentId, newStatus) => {
+            try {
+                const response = await axios.get(route("notifications.index"));
+                setNotifications(response.data.notifications);
+
+                return response.data.notifications;
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+
+                return null;
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    //const [notifications, setNotifications] = useState(NOTIFICATIONS);
 
     const totalUnRead = notifications.filter(
-        (item) => item.isUnRead === true
+        (item) => item.read_at === null
     ).length;
 
     const [open, setOpen] = useState(null);
@@ -170,7 +192,7 @@ export default function NotificationsPopover() {
                             </ListSubheader>
                         }
                     >
-                        {notifications.slice(0, 2).map((notification) => (
+                        {notifications.map((notification) => (
                             <NotificationItem
                                 key={notification.id}
                                 notification={notification}
@@ -233,13 +255,20 @@ function NotificationItem({ notification }) {
                 py: 1.5,
                 px: 2.5,
                 mt: "1px",
-                ...(notification.isUnRead && {
+                ...(notification.read_at !== null && {
                     bgcolor: "action.selected",
                 }),
             }}
+            onClick={() => {
+                router.get(
+                    `appointments/?selectedAppointmentId=${notification.data.appointment_id}`
+                );
+            }}
         >
             <ListItemAvatar>
-                <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
+                <Avatar sx={{ bgcolor: "background.neutral" }}>
+                    {notification.data.profile_photo_url}
+                </Avatar>
             </ListItemAvatar>
             <ListItemText
                 primary={title}
@@ -257,7 +286,7 @@ function NotificationItem({ notification }) {
                             icon="eva:clock-outline"
                             sx={{ mr: 0.5, width: 16, height: 16 }}
                         />
-                        {fToNow(notification.createdAt)}
+                        {fToNow(notification.created_at)}
                     </Typography>
                 }
             />
@@ -270,65 +299,23 @@ function NotificationItem({ notification }) {
 function renderContent(notification) {
     const title = (
         <Typography variant="subtitle2">
-            {notification.title}
+            {notification.data.title}
             <Typography
                 component="span"
                 variant="body2"
                 sx={{ color: "text.secondary" }}
             >
-                &nbsp; {notification.description}
+                &nbsp; {notification.data.message}
             </Typography>
         </Typography>
     );
-
-    if (notification.type === "order_placed") {
-        return {
-            avatar: (
-                <img
-                    alt={notification.title}
-                    src="/assets/icons/ic_notification_package.svg"
-                />
-            ),
-            title,
-        };
-    }
-    if (notification.type === "order_shipped") {
-        return {
-            avatar: (
-                <img
-                    alt={notification.title}
-                    src="/assets/icons/ic_notification_shipping.svg"
-                />
-            ),
-            title,
-        };
-    }
-    if (notification.type === "mail") {
-        return {
-            avatar: (
-                <img
-                    alt={notification.title}
-                    src="/assets/icons/ic_notification_mail.svg"
-                />
-            ),
-            title,
-        };
-    }
-    if (notification.type === "chat_message") {
-        return {
-            avatar: (
-                <img
-                    alt={notification.title}
-                    src="/assets/icons/ic_notification_chat.svg"
-                />
-            ),
-            title,
-        };
-    }
     return {
-        avatar: notification.avatar ? (
-            <img alt={notification.title} src={notification.avatar} />
-        ) : null,
+        avatar: (
+            <img
+                alt={notification.data.title}
+                src={notification.data.profile_photo_url}
+            />
+        ),
         title,
     };
 }

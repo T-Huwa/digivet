@@ -21,7 +21,7 @@ class AppointmentNotification extends Notification
      * @param \App\Models\Appointment $appointment
      * @param string $eventType
      */
-    public function __construct(Appointment $appointment, string $eventType)
+    public function __construct(Appointment $appointment, string $eventType=null)
     {
         $this->appointment = $appointment;
         $this->eventType = $eventType;
@@ -45,8 +45,10 @@ class AppointmentNotification extends Notification
         return [
             'appointment_id' => $this->appointment->id,
             'farmer_name' => $this->appointment->farmer->name,
-            'appointment_date' => $this->appointment->date,
+            'appointment_date' => $this->appointment->appointment_date,
             'message' => $message,
+            'title' => 'Appointment Update',
+            'eoProfile' => $this->appointment->extensionWorker->profile_photo_url,
         ];
     }
 
@@ -58,13 +60,13 @@ class AppointmentNotification extends Notification
     protected function generateMessage(): string
     {
         switch ($this->eventType) {
-            case 'created':
-                return 'A new appointment has been created.';
+            case 'Requested':
+                return 'You have a new appointment request.';
             case 'date_changed':
                 return 'The appointment date has been changed.';
-            case 'finished':
+            case 'Completed':
                 return 'The appointment has been completed.';
-            case 'canceled':
+            case 'Canceled':
                 return 'The appointment has been canceled.';
             default:
                 return 'An update has been made to your appointment.';

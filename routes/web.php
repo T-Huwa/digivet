@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Models\appointment;
 use Illuminate\Foundation\Application;
@@ -67,6 +68,13 @@ Route::middleware('auth')->prefix('appointments')->group(function () {
     Route::get('book', [AppointmentController::class, 'create'])->name('appointments.create');
     Route::post('update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.update.status');
     Route::get('/', [AppointmentController::class, 'index'])->name('appointments.get');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/read-all', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::post('/notifications/delete', [NotificationsController::class, 'destroy'])->name('notifications.destroy');
 });
 
 require __DIR__.'/auth.php';
