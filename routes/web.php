@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
-use App\Models\appointment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -75,6 +75,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/read', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/read-all', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::post('/notifications/delete', [NotificationsController::class, 'destroy'])->name('notifications.destroy');
+});
+
+Route::middleware('auth')->prefix('inventory')->group(function () {
+    Route::get('/', [InventoryController::class, 'index'])->name('inventory');
+    Route::post('createRecord', [InventoryController::class, 'store'])->name('inventory.create.record');
+    Route::patch('updateRecord', [InventoryController::class, 'update'])->name('inventory.update.record');
 });
 
 require __DIR__.'/auth.php';

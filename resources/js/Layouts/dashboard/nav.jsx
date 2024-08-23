@@ -90,7 +90,7 @@ export default function Nav({ openNav, onCloseNav }) {
         },
         {
             title: "Inventory",
-            path: "users",
+            path: "inventory",
             icon: icon("ic_cart"),
         },
         {

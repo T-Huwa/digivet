@@ -15,7 +15,7 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, $selectedAppointmentId =null)
+    public function index(Request $request)
     {
         $user = $request->user();
         $selctedCheck = $request->selectedAppointmentId;

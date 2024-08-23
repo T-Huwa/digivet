@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InventoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $inventoryRecords = Inventory::where('user_id', $request->user()->id)->get();
+
+        return Inertia::render('Farmer/Inventory', ['inventoryRecords' => $inventoryRecords]);
     }
 
     /**
@@ -28,7 +31,21 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $userID = $request->user()->id;
+
+        Inventory::create([
+            'user_id' => $userID, 
+            'animal_type' => $request->animal_type,
+            'animal_count' => $request->animal_count,
+        ]);
+
+        $inventoryRecords = Inventory::where('user_id', $request->user()->id)->get();
+
+        return Inertia::render('Farmer/Inventory', [
+            'inventoryRecords' => $inventoryRecords, 
+            'success' => "Record Addded successfully",
+        ]);
     }
 
     /**
@@ -50,9 +67,20 @@ class InventoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request)
     {
-        //
+        $record = Inventory::findOrFail($request->id);
+
+        $record->animal_count = $request->newCount;
+        $record->save();
+
+        $inventoryRecords = Inventory::where('user_id', $request->user()->id)->get();
+
+        return Inertia::render('Farmer/Inventory', [
+            'inventoryRecords' => $inventoryRecords, 
+            'success' => "Record Updated successfully",
+        ]);
+
     }
 
     /**
