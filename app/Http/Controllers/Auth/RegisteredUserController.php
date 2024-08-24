@@ -16,10 +16,36 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+
+    /**
+     * Display The User List
+     */
+    public function index(){
+        return Inertia::render('Users', [
+            'users' => User::with(['area' => function ($query) {
+                            Area::with(['district' => function ($query) {
+                                    $query->select('id', 'district_name');
+                                }]);
+                        }])
+                        ->get(['id', 'name', 'email', 'area_id', 'role'])
+                        ->map(function($user) {
+                            return [
+                                'id' => $user->id,
+                                'name' => $user->name,
+                                'email' => $user->email,
+                                'role' => $user->role,
+                                'verified' => $user->email_verified_at,
+                                'area_name' => $user->area->name ?? null,
+                                'district_name' => $user->area->district->district_name ?? null,
+                            ];
+                        })
+        ]);
+    }
+
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create()
     {
         return Inertia::render('Auth/Register', ['areas' => Area::all()]);
     }
@@ -37,7 +63,8 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'string',
             'district_id' => 'integer',
-            'area_id' => 'integer'
+            'area_id' => 'integer',
+            'phone' => 'string',
         ]);
 
         $user = User::create([
@@ -46,14 +73,12 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'district_id' => $request->district_id,
-            'area_id' => $request->area_id
+            'area_id' => $request->area_id,
+            'phone' => $request->phone,
         ]);
 
         event(new Registered($user));
-
-        //Auth::login($user);
-
-        //return redirect(route('dashboard', absolute: false));
+        
         return Inertia::render('Auth/Register', [
             'areas' => Area::all(),
             'success' => true,

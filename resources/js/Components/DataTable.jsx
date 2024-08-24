@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 
 export default function DataTable({ rows, columns }) {
     return (
-        <div style={{ height: 400, width: "100%" }} className="px-12">
+        <div style={{ width: "100%" }} className="px-12">
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -14,6 +14,7 @@ export default function DataTable({ rows, columns }) {
                 }}
                 pageSizeOptions={[5, 10]}
                 checkboxSelection={false}
+                autoHeight={true}
                 sx={{
                     bgcolor: "white",
                     boxShadow: 2,

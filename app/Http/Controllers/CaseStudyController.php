@@ -19,9 +19,15 @@ class CaseStudyController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $user = $request->user();
+
+        if ($user->role === 'Extension Worker') {
+            return Inertia::render('EO/CreateCaseStudy');
+        }
+
+        abort(403);
     }
 
     /**

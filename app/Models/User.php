@@ -23,6 +23,7 @@ class User extends Authenticatable
         "role",
         "district_id",
         "area_id",
+        "phone",
     ];
 
     public function area()

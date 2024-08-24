@@ -5,12 +5,9 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Drawer from "@mui/material/Drawer";
 import Avatar from "@mui/material/Avatar";
-import { alpha } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import ListItemButton from "@mui/material/ListItemButton";
 import TerrainIcon from "@mui/icons-material/Terrain";
-
-import { usePathname } from "@/routes/hooks";
 
 import { useResponsive } from "@/hooks/use-responsive";
 
@@ -20,12 +17,12 @@ import Scrollbar from "@/Components/scrollbar";
 import { NAV } from "./config-layout";
 import { Link, usePage } from "@inertiajs/react";
 import SvgColor from "@/Components/svg-color";
-import { DateRange } from "@mui/icons-material";
+import { DateRange, LocationOn } from "@mui/icons-material";
 
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
-    const pathname = usePathname();
+    const pathname = usePage().url;
 
     const account = usePage().props.auth.user;
 
@@ -43,14 +40,9 @@ export default function Nav({ openNav, onCloseNav }) {
             icon: icon("ic_analytics"),
         },
         {
-            title: "My Farmers",
-            path: "users",
-            icon: icon("ic_user"),
-        },
-        {
             title: "My Area",
-            path: "areas",
-            icon: <TerrainIcon />,
+            path: "areas.view",
+            icon: <LocationOn />,
         },
         {
             title: "Appointments",
@@ -59,7 +51,7 @@ export default function Nav({ openNav, onCloseNav }) {
         },
         {
             title: "Case studies",
-            path: "users",
+            path: "caseStudies",
             icon: icon("ic_blog"),
         },
     ];
@@ -78,7 +70,7 @@ export default function Nav({ openNav, onCloseNav }) {
         {
             title: "Areas",
             path: "admin.areas",
-            icon: <TerrainIcon />,
+            icon: <LocationOn />,
         },
     ];
 
@@ -95,12 +87,12 @@ export default function Nav({ openNav, onCloseNav }) {
         },
         {
             title: "My Area",
-            path: "areas",
-            icon: <TerrainIcon />,
+            path: "areas.view",
+            icon: <LocationOn />,
         },
         {
             title: "Case studies",
-            path: "users",
+            path: "caseStudies",
             icon: icon("ic_blog"),
         },
         {
@@ -128,7 +120,7 @@ export default function Nav({ openNav, onCloseNav }) {
                 display: "flex",
                 borderRadius: 1.5,
                 alignItems: "center",
-                bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
+                bgcolor: "rgba(0, 255, 0, 0.4)",
             }}
         >
             <Avatar src="/assets/images/avatars/avatar_1.jpg" alt="photoURL" />
@@ -225,7 +217,10 @@ Nav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item }) {
-    const active = false;
+    const itemFirstSegment = item.path.split(".")[0];
+    const pathname = usePage().url.split("/")[1];
+
+    const active = pathname === itemFirstSegment;
 
     return (
         <ListItemButton
@@ -241,10 +236,9 @@ function NavItem({ item }) {
                 ...(active && {
                     color: "primary.main",
                     fontWeight: "fontWeightSemiBold",
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                    bgcolor: "rgba(0, 255, 0, 0.4)",
                     "&:hover": {
-                        bgcolor: (theme) =>
-                            alpha(theme.palette.primary.main, 0.16),
+                        bgcolor: "rgba(0, 255, 0, 0.5)",
                     },
                 }),
             }}

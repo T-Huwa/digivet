@@ -51,9 +51,12 @@ class InventoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Inventory $inventory)
+    public function show(Request $request, $id)
     {
-        //
+        $inventoryRecords = Inventory::where('user_id', $id)->get();
+        
+        return response()->json(['inventoryRecords' => $inventoryRecords]);
+
     }
 
     /**
