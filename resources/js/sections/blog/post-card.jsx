@@ -1,24 +1,22 @@
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
 import { fDate } from "@/utils/format-time";
-import { fShortenNumber } from "@/utils/format-number";
 
-import Iconify from "@/Components/iconify";
 import SvgColor from "@/Components/svg-color";
+import { router } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-    const { cover, title, view, comment, share, author, createdAt } = post;
+    const { image_url, title, id, extension_worker, created_at } = post;
 
     const latestPostLarge = index === 0;
 
@@ -26,8 +24,8 @@ export default function PostCard({ post, index }) {
 
     const renderAvatar = (
         <Avatar
-            alt={author.name}
-            src={author.avatarUrl}
+            alt={"profile"}
+            src={"/assets/images/avatars/avatar_1.jpg"}
             sx={{
                 zIndex: 9,
                 width: 32,
@@ -67,46 +65,11 @@ export default function PostCard({ post, index }) {
         </Link>
     );
 
-    const renderInfo = (
-        <Stack
-            direction="row"
-            flexWrap="wrap"
-            spacing={1.5}
-            justifyContent="flex-end"
-            sx={{
-                mt: 3,
-                color: "text.disabled",
-            }}
-        >
-            {[
-                { number: comment, icon: "eva:message-circle-fill" },
-                { number: view, icon: "eva:eye-fill" },
-                { number: share, icon: "eva:share-fill" },
-            ].map((info, _index) => (
-                <Stack
-                    key={_index}
-                    direction="row"
-                    sx={{
-                        ...((latestPostLarge || latestPost) && {
-                            opacity: 0.48,
-                            color: "common.white",
-                        }),
-                    }}
-                >
-                    <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-                    <Typography variant="caption">
-                        {fShortenNumber(info.number)}
-                    </Typography>
-                </Stack>
-            ))}
-        </Stack>
-    );
-
     const renderCover = (
         <Box
             component="img"
             alt={title}
-            src={cover}
+            src={image_url}
             sx={{
                 top: 0,
                 width: 1,
@@ -122,7 +85,6 @@ export default function PostCard({ post, index }) {
             variant="caption"
             component="div"
             sx={{
-                mb: 2,
                 color: "text.disabled",
                 ...((latestPostLarge || latestPost) && {
                     opacity: 0.48,
@@ -130,7 +92,7 @@ export default function PostCard({ post, index }) {
                 }),
             }}
         >
-            {fDate(createdAt)}
+            {fDate(created_at)}
         </Typography>
     );
 
@@ -156,7 +118,10 @@ export default function PostCard({ post, index }) {
             sm={latestPostLarge ? 12 : 6}
             md={latestPostLarge ? 6 : 3}
         >
-            <Card>
+            <Card
+                className="post-card cursor-pointer hover:shadow-2xl hover:transform hover:translate-x-1 hover:-translate-y-1"
+                onClick={() => router.get(`caseStudies/${id}`)}
+            >
                 <Box
                     sx={{
                         position: "relative",
@@ -170,7 +135,7 @@ export default function PostCard({ post, index }) {
                                 height: "100%",
                                 position: "absolute",
                                 bgcolor: (theme) =>
-                                    alpha(theme.palette.grey[900], 0.72),
+                                    alpha(theme.palette.grey[900], 0.5),
                             },
                         }),
                         ...(latestPostLarge && {
@@ -186,24 +151,53 @@ export default function PostCard({ post, index }) {
                     {renderAvatar}
 
                     {renderCover}
+
+                    {latestPostLarge && (
+                        <Box
+                            sx={{
+                                p: (theme) => theme.spacing(4, 3, 3, 3),
+                                zIndex: 50,
+                                ...((latestPostLarge || latestPost) && {
+                                    width: 1,
+                                    bottom: 0,
+                                    position: "absolute",
+                                }),
+                            }}
+                        >
+                            {renderDate}
+                            {renderTitle}
+                        </Box>
+                    )}
+                    {latestPost && (
+                        <Box
+                            sx={{
+                                p: (theme) => theme.spacing(4, 3, 3, 3),
+                                zIndex: 50,
+                                ...((latestPostLarge || latestPost) && {
+                                    width: 1,
+                                    bottom: 0,
+                                    position: "absolute",
+                                }),
+                            }}
+                        >
+                            {renderDate}
+                            {renderTitle}
+                        </Box>
+                    )}
                 </Box>
 
-                <Box
-                    sx={{
-                        p: (theme) => theme.spacing(4, 3, 3, 3),
-                        ...((latestPostLarge || latestPost) && {
-                            width: 1,
-                            bottom: 0,
-                            position: "absolute",
-                        }),
-                    }}
-                >
-                    {renderDate}
-
-                    {renderTitle}
-
-                    {renderInfo}
-                </Box>
+                {/* Only render date and title outside of the cover box for non-latest posts */}
+                {!latestPostLarge && !latestPost && (
+                    <Box
+                        sx={{
+                            p: (theme) => theme.spacing(4, 3, 3, 3),
+                            zIndex: 50,
+                        }}
+                    >
+                        {renderDate}
+                        {renderTitle}
+                    </Box>
+                )}
             </Card>
         </Grid>
     );

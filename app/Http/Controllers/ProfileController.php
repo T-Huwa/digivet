@@ -42,6 +42,20 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update The Avatar
+     */
+    public function updateAvatar(Request $request, $avatarId){
+        $user = $request->user();
+        if ($avatarId) {
+            $user->profile_photo_url = url('/assets/images/avatars/avatar_' . $avatarId . '.jpg');
+            $user->save();
+            return response()->json(['success' => 'Profile Photo Updated']);
+        }
+
+        abort(404);
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy($id)

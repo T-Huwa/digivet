@@ -16,21 +16,41 @@ import AppTrafficBySite from "../app-traffic-by-site";
 import AppCurrentSubject from "../app-current-subject";
 import AppConversionRates from "../app-conversion-rates";
 import { Paper } from "@mui/material";
+import { useEffect } from "react";
+import { useState } from "react";
+import { usePage } from "@inertiajs/react";
 
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+    const inventoryRecords = usePage().props.inventoryRecords;
+    const appointments = usePage().props.appointments;
+    const caseStudies = usePage().props.caseStudies;
+
+    console.log(usePage().props);
+
+    const [totalAnimalCount, setTotalAnimalCount] = useState(0);
+
+    useEffect(() => {
+        var total = 0;
+        inventoryRecords.map((record) => {
+            total += record.animal_count;
+        });
+        setTotalAnimalCount(total);
+        total = 0;
+    }, []);
+
     return (
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{ mb: 5 }}>
-                Hi, Welcome back 👋
+                Welcome back
             </Typography>
 
             <Grid container spacing={3}>
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Weekly Sales"
-                        total={714000}
+                        title="Total Animals"
+                        total={totalAnimalCount}
                         color="success"
                         icon={
                             <img
@@ -43,9 +63,10 @@ export default function AppView() {
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="New Users"
-                        total={1352831}
-                        color="info"
+                        title="Animal Types"
+                        total={inventoryRecords.length}
+                        // color="info"
+                        color="success"
                         icon={
                             <img
                                 alt="icon"
@@ -57,9 +78,10 @@ export default function AppView() {
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Item Orders"
-                        total={1723315}
-                        color="warning"
+                        title="Total Appointments"
+                        total={appointments}
+                        //color="warning"
+                        color="success"
                         icon={
                             <img
                                 alt="icon"
@@ -71,9 +93,10 @@ export default function AppView() {
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Bug Reports"
-                        total={234}
-                        color="error"
+                        title="Case Studies Posted"
+                        total={caseStudies}
+                        //color="error"
+                        color="success"
                         icon={
                             <img
                                 alt="icon"

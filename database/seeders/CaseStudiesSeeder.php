@@ -71,7 +71,7 @@ class CaseStudiesSeeder extends Seeder
                 'extension_worker_id' => $extensionWorkers[array_rand($extensionWorkers)],
                 'title' => $caseStudy['title'],
                 'content' => $caseStudy['content'],
-                'image' => $caseStudy['image_url'],
+                'image_url' => $caseStudy['image_url'],
             ]);
         }
     }

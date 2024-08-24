@@ -9,7 +9,7 @@ class CaseStudy extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['extension_worker_id', 'title', 'content', 'image'];
+    protected $fillable = ['extension_worker_id', 'title', 'content', 'image_url'];
 
     public function extensionWorker()
     {

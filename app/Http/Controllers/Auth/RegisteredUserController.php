@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Area;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -67,6 +65,8 @@ class RegisteredUserController extends Controller
             'phone' => 'string',
         ]);
 
+        $randomNumber = rand(1, 24);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -75,6 +75,7 @@ class RegisteredUserController extends Controller
             'district_id' => $request->district_id,
             'area_id' => $request->area_id,
             'phone' => $request->phone,
+            'profile_photo_url' => url('/assets/images/avatars/avatar_' . $randomNumber . '.jpg'),
         ]);
 
         event(new Registered($user));

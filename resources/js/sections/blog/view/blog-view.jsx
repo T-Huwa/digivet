@@ -11,10 +11,14 @@ import Iconify from "@/Components/iconify";
 import PostCard from "../post-card";
 import PostSort from "../post-sort";
 import PostSearch from "../post-search";
+import { router, usePage } from "@inertiajs/react";
+import SecondaryButton from "@/Components/SecondaryButton";
 
 // ----------------------------------------------------------------------
 
 export default function BlogView() {
+    const caseStudies = usePage().props.caseStudies;
+
     return (
         <Container>
             <Stack
@@ -23,15 +27,13 @@ export default function BlogView() {
                 justifyContent="space-between"
                 mb={5}
             >
-                <Typography variant="h4">Blog</Typography>
+                <Typography variant="h4">Case Studies</Typography>
 
-                <Button
-                    variant="contained"
-                    color="inherit"
-                    startIcon={<Iconify icon="eva:plus-fill" />}
+                <SecondaryButton
+                    onClick={() => router.get(route("caseStudies.create"))}
                 >
                     New Post
-                </Button>
+                </SecondaryButton>
             </Stack>
 
             <Stack
@@ -51,7 +53,7 @@ export default function BlogView() {
             </Stack>
 
             <Grid container spacing={3}>
-                {posts.map((post, index) => (
+                {caseStudies.map((post, index) => (
                     <PostCard key={post.id} post={post} index={index} />
                 ))}
             </Grid>

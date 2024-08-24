@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 
 import { useResponsive } from "@/hooks/use-responsive";
 
@@ -8,7 +8,7 @@ import { NAV, HEADER } from "./config-layout";
 
 // ----------------------------------------------------------------------
 
-const SPACING = 8;
+const SPACING = 4;
 
 export default function Main({ children, sx, ...other }) {
     const lgUp = useResponsive("up", "lg");

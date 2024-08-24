@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CaseStudyController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -21,16 +23,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AnalyticsController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/users', [RegisteredUserController::class, 'index'])->middleware(['auth', 'admin'])->name('users');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/avatar/', [ProfileController::class, 'updateAvatar'])->name('profile.update.avatar');
     Route::delete('/profile/{id}/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -63,11 +63,20 @@ Route::middleware('auth')->prefix('inventory')->group(function () {
 
 Route::get('areas/myArea', [AreaController::class, 'show'])->middleware('auth')->name('areas.view');
 
-Route::get('/caseStudies', [CaseStudyController::class, 'index'])->name('caseStudies');
-
 Route::middleware('auth')->prefix('caseStudies')->group(function () {
-    Route::get('/', [CaseStudyController::class, 'create'])->name('caseStudies');
+    Route::get('/create', [CaseStudyController::class, 'create'])->name('caseStudies.create');
+    Route::post('/create', [CaseStudyController::class, 'store'])->name('caseStudies.store');
+    Route::get('/', [CaseStudyController::class, 'index'])->name('caseStudies');
+    Route::get('/{id}', [CaseStudyController::class, 'show'])->name('caseStudies.show');
 });
 
+Route::middleware('auth')->prefix('analytics')->group(function (){
+    Route::get('/getAll', [AnalyticsController::class, 'index'])->name('analytics.getAll');
+});
+
+Route::middleware('auth')->prefix('chatroom')->group(function (){
+    Route::get('/', [MessageController::class, 'index'])->name('chatroom');
+    Route::post('/sendMessage', [MessageController::class, 'store'])->name('chatroom.send.message');
+});
 
 require __DIR__.'/auth.php';

@@ -24,6 +24,7 @@ class User extends Authenticatable
         "district_id",
         "area_id",
         "phone",
+        'profile_photo_url',
     ];
 
     public function area()

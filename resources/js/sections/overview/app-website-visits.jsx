@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
 
 import Chart, { useChart } from "@/Components/chart";

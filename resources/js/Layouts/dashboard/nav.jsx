@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Drawer from "@mui/material/Drawer";
 import Avatar from "@mui/material/Avatar";
@@ -17,7 +17,7 @@ import Scrollbar from "@/Components/scrollbar";
 import { NAV } from "./config-layout";
 import { Link, usePage } from "@inertiajs/react";
 import SvgColor from "@/Components/svg-color";
-import { DateRange, LocationOn } from "@mui/icons-material";
+import { Chat, DateRange, LocationOn } from "@mui/icons-material";
 
 // ----------------------------------------------------------------------
 
@@ -100,6 +100,11 @@ export default function Nav({ openNav, onCloseNav }) {
             path: "appointments.get",
             icon: <DateRange />,
         },
+        {
+            title: "Chat Room",
+            path: "chatroom",
+            icon: <Chat />,
+        },
     ];
 
     const upLg = useResponsive("up", "lg");
@@ -123,7 +128,7 @@ export default function Nav({ openNav, onCloseNav }) {
                 bgcolor: "rgba(0, 255, 0, 0.4)",
             }}
         >
-            <Avatar src="/assets/images/avatars/avatar_1.jpg" alt="photoURL" />
+            <Avatar src={account.profile_photo_url} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
                 <Typography variant="subtitle2">{account.name},</Typography>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('extension_worker_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('title');
             $table->text('content');
-            $table->string('image')->nullable();
+            $table->string('image_url')->nullable();
             $table->dateTime('date_added')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });
