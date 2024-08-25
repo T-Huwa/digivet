@@ -77,6 +77,8 @@ Route::middleware('auth')->prefix('analytics')->group(function (){
 Route::middleware('auth')->prefix('chatroom')->group(function (){
     Route::get('/', [MessageController::class, 'index'])->name('chatroom');
     Route::post('/sendMessage', [MessageController::class, 'store'])->name('chatroom.send.message');
+    Route::get('/{id}', [MessageController::class, 'show'])->name('chatroom.get.chat.messages');
+
 });
 
 require __DIR__.'/auth.php';

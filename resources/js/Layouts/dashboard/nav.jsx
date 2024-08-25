@@ -54,6 +54,11 @@ export default function Nav({ openNav, onCloseNav }) {
             path: "caseStudies",
             icon: icon("ic_blog"),
         },
+        {
+            title: "Chat Room",
+            path: "chatroom",
+            icon: <Chat />,
+        },
     ];
 
     const adminNav = [

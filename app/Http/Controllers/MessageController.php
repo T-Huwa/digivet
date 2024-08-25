@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -22,7 +24,8 @@ class MessageController extends Controller
             return Inertia::render('Farmer/ChatRoom', ['EOs'=> $EOs]);
         }
         if ($user->role === 'Extension Worker') {
-            return Inertia::render('EO/ChatRoom');
+            $users = User::where('area_id', $user->area_id)->get();
+            return Inertia::render('EO/ChatRoom', ['users'=> $users]);
         }
 
         abort(404);
@@ -45,14 +48,18 @@ class MessageController extends Controller
         $message = $request->message;
         $user = $request->user();
 
-        Message::create([
+        
+
+        $newMessage = Message::create([
             'sender_id' => $user->id,
-            'recepient_id' => $recepientId,
+            'recipient_id' => $recepientId,
             'message' => $message,
         ]);
-
-        if($user->role === 'Farmer') return Inertia::render('Farmer/ChatRoom');
-        if($user->role === 'Extension Worker') return Inertia::render('EO/ChatRoom');
+        
+        return response()->json([
+            'success'=> 'Message sent', 
+            'message' => $newMessage,
+        ]);
 
         abort(404);
     }
@@ -60,9 +67,23 @@ class MessageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Message $message, $id)
+    public function show(Request $request, $id)
     {
-        //
+        $chatUserId = $id;
+        $loggedInUserId = $request->user()->id;
+        
+        $messages = Message::where(function ($query) use ($loggedInUserId , $chatUserId){
+
+            $query->where('sender_id', $loggedInUserId)->where('recipient_id', $chatUserId);
+
+        })->orWhere(function ($query) use ($loggedInUserId , $chatUserId) {
+
+            $query->where('sender_id', $chatUserId)->where('recipient_id', $loggedInUserId);
+
+        })->orderBy('created_at', 'asc')->get();
+
+        return response()->json($messages);
+        
     }
 
     /**
