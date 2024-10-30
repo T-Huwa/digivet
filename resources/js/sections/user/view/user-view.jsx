@@ -24,10 +24,13 @@ import { emptyRows, applyFilter, getComparator } from "../utils";
 import { Paper } from "@mui/material";
 import { Link } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
+import { Add } from "@mui/icons-material";
 
 // ----------------------------------------------------------------------
 
 export default function UserPage({ users }) {
+    console.log(users);
+
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState("asc");
@@ -109,7 +112,8 @@ export default function UserPage({ users }) {
 
                 <PrimaryButton>
                     <Link href="/register">
-                        <Iconify icon="eva:plus-fill" />
+                        {/* <Iconify icon="eva:plus-fill" /> */}
+                        <Add />
                     </Link>
                 </PrimaryButton>
             </Stack>

@@ -67,13 +67,21 @@ class RegisteredUserController extends Controller
 
         $randomNumber = rand(1, 24);
 
+        $areaEo = User::where('area_id', $request->area_id);
+        $message = "User Added Successfully";
+        $userArea = $request->area_id;
+        if($request->role === 'Extension Worker' && $areaEo){
+            $message = "User was registered, but failed to add to area because there is already an EO assigned to that area";
+            $userArea = null;
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'district_id' => $request->district_id,
-            'area_id' => $request->area_id,
+            'area_id' => $userArea,
             'phone' => $request->phone,
             'profile_photo_url' => url('/assets/images/avatars/avatar_' . $randomNumber . '.jpg'),
         ]);
@@ -83,7 +91,8 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register', [
             'areas' => Area::all(),
             'success' => true,
-            'message' => 'User added successfully!',
+            'eoExists' => true,
+            'message' => $message,
             'user' => $user
         ]);
     }

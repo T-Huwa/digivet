@@ -7,6 +7,8 @@ import { Create } from "@mui/icons-material";
 import { Head, router } from "@inertiajs/react";
 
 export default function Appointments({ appointments }) {
+    console.log(appointments);
+
     const columns = [
         { field: "id", headerName: "ID", width: 50 },
         {
@@ -25,6 +27,13 @@ export default function Appointments({ appointments }) {
         {
             field: "description",
             headerName: "Description",
+            minWidth: 150,
+            sortable: false,
+            flex: 1,
+        },
+        {
+            field: "feedback",
+            headerName: "Feedback",
             minWidth: 150,
             sortable: false,
             flex: 1,

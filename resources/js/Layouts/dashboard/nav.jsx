@@ -64,17 +64,17 @@ export default function Nav({ openNav, onCloseNav }) {
     const adminNav = [
         {
             title: "dashboard",
-            path: "admin.dashboard",
+            path: "dashboard",
             icon: icon("ic_analytics"),
         },
         {
             title: "users",
-            path: "admin.users",
+            path: "users",
             icon: icon("ic_user"),
         },
         {
             title: "Areas",
-            path: "admin.areas",
+            path: "areas",
             icon: <LocationOn />,
         },
     ];

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use App\Models\Area;
 use App\Models\User;
 use App\Notifications\AppointmentNotification;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -27,13 +25,14 @@ class AppointmentController extends Controller
 
         if ($user->role === 'Farmer') {
             // Farmers can only see their own appointments
-            $appointments = Appointment::where('farmer_id', $user->id)->with('extensionWorker')->get(['id', 'appointment_date', 'description', 'extension_worker_id', 'status', ])
+            $appointments = Appointment::where('farmer_id', $user->id)->with('extensionWorker')->get(['id', 'appointment_date', 'description', 'extension_worker_id', 'status', 'feedback' ])
                 ->map(function($appointment) {
                     return [
                         'id' => $appointment->id,
                         'appointment_date' => $appointment->appointment_date,
                         'description' => $appointment->description,
                         'status' => $appointment->status,
+                        'feedback' => $appointment->feedback,
                         'extension_worker' => $appointment->extensionWorker->name ?? null,
                     ];
                 });
@@ -46,13 +45,14 @@ class AppointmentController extends Controller
             return Inertia::render('Farmer/Appointments', ['appointments' => $appointments ,'selectedAppointment'=>$selectedAppointment]);
         } elseif ($user->role === 'Extension Worker') {
             
-            $appointments = Appointment::where('extension_worker_id', $user->id)->with('farmer')->get(['id', 'appointment_date', 'description', 'farmer_id', 'status', ])
+            $appointments = Appointment::where('extension_worker_id', $user->id)->with('farmer')->get(['id', 'appointment_date', 'description', 'farmer_id', 'status', 'feedback' ])
                 ->map(function($appointment) {
                     return [
                         'id' => $appointment->id,
                         'appointment_date' => $appointment->appointment_date,
                         'description' => $appointment->description,
                         'status' => $appointment->status,
+                        'feedback' => $appointment->feedback,
                         'farmer' => $appointment->farmer->name ?? null,
                     ];
                 });
@@ -62,7 +62,7 @@ class AppointmentController extends Controller
                 $selectedAppointment = $appointments->firstWhere('id', $request->selectedAppointmentId);
             }
             return Inertia::render('EO/Appointments', ['appointments' => $appointments, 'selectedAppointment'=>$selectedAppointment]);
-        } else {
+        } elseif ($user->role === 'Admin') {
 
             // Admins can see all appointments
             $appointments = Appointment::all();
@@ -176,10 +176,20 @@ class AppointmentController extends Controller
     }
 
 
-    public function updateDate(Request $request, Appointment $appointment)
+    public function updateDate(Request $request)
     {
+        $request->validate([
+            'id' => 'required|integer|exists:appointments,id',
+            'date' => 'required',
+        ]);
+
+        // Find the appointment by ID from the request
+        $appointment = Appointment::findOrFail($request->id);
+
         // Update the appointment date
-        $appointment->update(['appointment_date' => $request->date]);
+        $appointment->status = "Pending";
+        $appointment->appointment_date = $request->date;
+        $appointment->save();
 
         // Find the Extension Worker
         $extensionWorker = User::find($appointment->extension_worker_id);
@@ -190,5 +200,29 @@ class AppointmentController extends Controller
         $farmer->notify(new AppointmentNotification($appointment, 'date_changed'));
 
         return response()->json(['success' => 'Appointment date updated successfully.']);
+    }
+
+    public function completeAppointment(Request $request)
+    {
+        // Validate the request to ensure 'id' and 'status' are present
+        $request->validate([
+            'id' => 'required|integer|exists:appointments,id',
+            'feedback' => 'required|string',
+        ]);
+
+        // Find the appointment by ID from the request
+        $appointment = Appointment::findOrFail($request->id);
+
+        // Update the status from the request
+        $appointment->status = 'Completed';
+        $appointment->feedback = $request->feedback;
+        $appointment->save();
+
+        $farmer = User::find($appointment->farmer_id);
+
+        // Notify about the date change
+        $farmer->notify(new AppointmentNotification($appointment), $request->status);
+
+        return response()->json($appointment);
     }
 }

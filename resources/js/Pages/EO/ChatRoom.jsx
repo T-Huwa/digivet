@@ -43,7 +43,6 @@ const ChatRoom = ({ users }) => {
                         sx={{
                             minWidth: 220,
                             maxWidth: 260,
-                            //display: { xs: "none", sm: "block" },
                         }}
                     >
                         <h5 className="text-lg font-medium">Chats</h5>
@@ -79,16 +78,15 @@ const ChatRoom = ({ users }) => {
                         </List>
                     </Box>
                     <Box
-                        className="flex-1 px-3 pt-3 h-full flex"
+                        className="flex-1 px-3 h-full flex flex-col"
                         sx={{
                             borderLeft: { xs: 0, sm: 2 },
                         }}
-                        flexDirection={"column"}
                     >
                         <div className="header text-lg font-bold">
                             {activeChat && (
                                 <>
-                                    <div className="flex p-2 my-2 rounded">
+                                    <div className="flex p-2 my-2\1 rounded">
                                         <Avatar
                                             src={activeChat.profile_photo_url}
                                             alt="photoURL"
@@ -114,8 +112,8 @@ const ChatRoom = ({ users }) => {
                         </div>
                         <Divider />
                         <Box
-                            flexDirection={"column"}
-                            className="w-full mb-6 flex-1 my-5 flex"
+                            className="w-full flex-1 overflow-y-auto mb-4"
+                            sx={{ height: "calc(100% - 60px)" }}
                         >
                             {activeChat && (
                                 <ChatMessages userId={activeChat.id} />

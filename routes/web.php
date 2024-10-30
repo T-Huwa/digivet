@@ -9,11 +9,11 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TipController;
+use App\Models\Tip;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Models\Area;
-use App\Models\User;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -44,6 +44,8 @@ Route::middleware('auth')->prefix('appointments')->group(function () {
     Route::post('book', [AppointmentController::class, 'store'])->name('appointments.create');
     Route::get('book', [AppointmentController::class, 'create'])->name('appointments.create');
     Route::post('update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.update.status');
+    Route::post('update-date', [AppointmentController::class, 'updateDate'])->name('appointments.update.date');
+    Route::post('complete', [AppointmentController::class, 'completeAppointment'])->name('appointments.complete');
     Route::get('/', [AppointmentController::class, 'index'])->name('appointments.get');
 });
 
@@ -78,7 +80,10 @@ Route::middleware('auth')->prefix('chatroom')->group(function (){
     Route::get('/', [MessageController::class, 'index'])->name('chatroom');
     Route::post('/sendMessage', [MessageController::class, 'store'])->name('chatroom.send.message');
     Route::get('/{id}', [MessageController::class, 'show'])->name('chatroom.get.chat.messages');
+});
 
+Route::prefix('tips')->group(function (){
+    Route::get('/', [TipController::class, 'index'])->name('tips.getAll');
 });
 
 require __DIR__.'/auth.php';

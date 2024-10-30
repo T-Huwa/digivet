@@ -13,7 +13,7 @@ class CaseStudyController extends Controller
      */
     public function index()
     {
-        $caseStudies = CaseStudy::with(['extensionWorker:id,name,profile_photo_url'])->get();
+        $caseStudies = CaseStudy::with(['extensionWorker:id,name,profile_photo_url'])->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('CaseStudies/CaseStudies', ['caseStudies' => $caseStudies]);
     }

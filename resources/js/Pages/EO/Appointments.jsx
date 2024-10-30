@@ -1,25 +1,34 @@
 import DataTable from "@/Components/DataTable";
 import DashboardLayout from "@/Layouts/dashboard";
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import React, { useState } from "react";
-import { Close, OpenInNew } from "@mui/icons-material";
+import { Close, Edit, OpenInNew } from "@mui/icons-material";
 import axios from "axios";
 import DangerButton from "@/Components/DangerButton";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useEffect } from "react";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
+import InputLabel from "@/Components/InputLabel";
+import { Textarea } from "@headlessui/react";
+import TextInput from "@/Components/TextInput";
 
 export default function Appointments({ appointments, selectedAppointment }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalAppointment, setModalAppointment] = useState(null);
+    const [completing, setCompleting] = useState(false);
+    const [feedback, setFeedback] = useState("");
+    const [editing, setEditing] = useState(false);
+    const [date, setDate] = useState(null);
 
     console.log(usePage().props);
 
     useEffect(() => {
         if (selectedAppointment) {
             setModalAppointment(selectedAppointment);
+            setDate(selectedAppointment.appointment_date);
+            console.log(date);
             setModalOpen(true);
         }
     }, []);
@@ -44,6 +53,13 @@ export default function Appointments({ appointments, selectedAppointment }) {
             sortable: false,
         },
         {
+            field: "feedback",
+            headerName: "Feedback",
+            minWidth: 150,
+            sortable: false,
+            flex: 1,
+        },
+        {
             field: "actions",
             headerName: "Actions",
             width: 150,
@@ -59,25 +75,36 @@ export default function Appointments({ appointments, selectedAppointment }) {
     ];
 
     const openModal = (appointment) => {
+        setDate(appointment.appointment_date);
+        console.log(date);
         setModalAppointment(appointment);
         setModalOpen(true);
     };
 
     const closeModal = () => {
+        setEditing(false);
         setModalOpen(false);
         setModalAppointment(null);
     };
 
     const handleAppointment = async (appointmentId, newStatus) => {
         closeModal();
+        let response;
         try {
-            const response = await axios.post(
-                route("appointments.update.status"),
-                {
+            if (editing) {
+                response = await axios.post(route("appointments.update.date"), {
                     id: appointmentId,
-                    status: newStatus,
-                }
-            );
+                    date: date,
+                });
+            } else {
+                response = await axios.post(
+                    route("appointments.update.status"),
+                    {
+                        id: appointmentId,
+                        status: newStatus,
+                    }
+                );
+            }
 
             alert("Appointment Updated");
             console.log("Appointment updated successfully:", response.data);
@@ -91,8 +118,29 @@ export default function Appointments({ appointments, selectedAppointment }) {
         }
     };
 
+    const completeAppointment = async (appointmentId) => {
+        closeModal();
+        try {
+            const response = await axios.post(route("appointments.complete"), {
+                id: appointmentId,
+                feedback: feedback,
+            });
+
+            alert("Appointment Completed");
+            console.log("Appointment completed successfully:", response.data);
+
+            return response.data;
+        } catch (error) {
+            alert("Error Completing appointment");
+            console.error("Error completing appointment:", error);
+
+            return null;
+        }
+    };
+
     return (
         <DashboardLayout>
+            <Head title="Appointments" />
             <div style={{ height: 400, width: "100%" }}>
                 <Box className="flex">
                     <Typography
@@ -117,71 +165,151 @@ export default function Appointments({ appointments, selectedAppointment }) {
                             <Close />
                         </DangerButton>
                     </Box>
+                    {modalAppointment !== "Completed"}
 
-                    {modalAppointment && (
+                    {modalAppointment && !completing && (
                         <>
-                            <div>
-                                <p>
-                                    <strong>ID:</strong> {modalAppointment.id}
-                                </p>
-                                <p>
-                                    <strong>Date:</strong>{" "}
-                                    {modalAppointment.appointment_date}
-                                </p>
-                                <p>
-                                    <strong>Farmer:</strong>{" "}
-                                    {modalAppointment.farmer}
-                                </p>
-                                <p>
-                                    <strong>Status:</strong>{" "}
-                                    {modalAppointment.status}
-                                </p>
-                                <p>
-                                    <strong>Description:</strong>{" "}
-                                    {modalAppointment.description}
-                                </p>
-                            </div>
-                            {modalAppointment.status !== "Cancelled" && (
-                                <div className="mt-6 flex justify-end">
-                                    <SecondaryButton
-                                        className="mx-1"
-                                        onClick={() =>
-                                            handleAppointment(
-                                                modalAppointment.id,
-                                                "Pending"
-                                            )
-                                        }
-                                    >
-                                        Accept
-                                    </SecondaryButton>
-                                    <DangerButton
-                                        className="mx-1"
-                                        onClick={() =>
-                                            handleAppointment(
-                                                modalAppointment.id,
-                                                "Cancelled"
-                                            )
-                                        }
-                                    >
-                                        Cancel
-                                    </DangerButton>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <strong>ID:</strong>
+                                    </td>
+                                    <td className="pl-4">
+                                        {modalAppointment.id}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Date: </strong>
+                                    </td>
+                                    <td className="pl-4">
+                                        {editing && (
+                                            <TextInput
+                                                value={date}
+                                                type="date"
+                                                onChange={(e) =>
+                                                    setDate(e.target.value)
+                                                }
+                                            />
+                                        )}
 
-                                    {modalAppointment.status !==
-                                        "Requested" && (
-                                        <PrimaryButton
+                                        {!editing && (
+                                            <>
+                                                {
+                                                    modalAppointment.appointment_date
+                                                }{" "}
+                                                {modalAppointment.status ===
+                                                    "Requested" && (
+                                                    <IconButton
+                                                        onClick={() =>
+                                                            setEditing(true)
+                                                        }
+                                                    >
+                                                        <Edit />
+                                                    </IconButton>
+                                                )}
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Farmer:</strong>
+                                    </td>
+                                    <td className="pl-4">
+                                        {modalAppointment.farmer}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Status:</strong>
+                                    </td>
+                                    <td className="pl-4">
+                                        {modalAppointment.status}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Description:</strong>
+                                    </td>
+                                    <td className="pl-4">
+                                        {modalAppointment.description}
+                                    </td>
+                                </tr>
+                            </table>
+                            {modalAppointment.status !== "Cancelled" &&
+                                modalAppointment.status !== "Completed" && (
+                                    <div className="mt-6 flex justify-end">
+                                        {modalAppointment.status ===
+                                            "Requested" && (
+                                            <SecondaryButton
+                                                className="mx-1"
+                                                onClick={() =>
+                                                    handleAppointment(
+                                                        modalAppointment.id,
+                                                        "Pending"
+                                                    )
+                                                }
+                                            >
+                                                Accept
+                                            </SecondaryButton>
+                                        )}
+
+                                        <DangerButton
                                             className="mx-1"
                                             onClick={() =>
                                                 handleAppointment(
                                                     modalAppointment.id,
-                                                    "Completed"
+                                                    "Cancelled"
                                                 )
                                             }
                                         >
-                                            Complete
-                                        </PrimaryButton>
-                                    )}
-                                </div>
-                            )}{" "}
+                                            Cancel
+                                        </DangerButton>
+
+                                        {modalAppointment.status !==
+                                            "Requested" && (
+                                            <PrimaryButton
+                                                className="mx-1"
+                                                onClick={() =>
+                                                    setCompleting(true)
+                                                }
+                                            >
+                                                Complete
+                                            </PrimaryButton>
+                                        )}
+                                    </div>
+                                )}
+                        </>
+                    )}
+
+                    {completing && (
+                        <>
+                            <div className="my-4">
+                                <InputLabel
+                                    htmlFor="feedback"
+                                    value="Enter Feedback"
+                                />
+
+                                <Textarea
+                                    id="feedback"
+                                    type="textarea"
+                                    name="feedback"
+                                    value={feedback}
+                                    className="mt-1 block w-full rounded-md"
+                                    onChange={(e) =>
+                                        setFeedback(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <PrimaryButton
+                                className="mx-1"
+                                onClick={() =>
+                                    completeAppointment(modalAppointment.id)
+                                }
+                            >
+                                Complete
+                            </PrimaryButton>
                         </>
                     )}
                 </Box>

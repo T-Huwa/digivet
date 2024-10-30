@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import OutlineBubble from "./Bubbles/CleanBubble";
 import Bubble from "./Bubbles/Bubble";
 
 const ChatMessages = ({ userId }) => {

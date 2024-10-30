@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DistrictSeeder::class,
-            AreaSeeder::class
+            AreaSeeder::class,
+            TipSeeder::class,
         ]);
               
         User::create([

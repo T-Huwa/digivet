@@ -19,6 +19,7 @@ import { Paper } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { usePage } from "@inertiajs/react";
+import AppProfile from "../app-profile";
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +31,7 @@ export default function AppView() {
     console.log(usePage().props);
 
     const [totalAnimalCount, setTotalAnimalCount] = useState(0);
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         var total = 0;
@@ -38,6 +40,21 @@ export default function AppView() {
         });
         setTotalAnimalCount(total);
         total = 0;
+
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get(route("notifications.index"));
+                setNotifications(response.data.notifications);
+
+                return response.data.notifications;
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+
+                return null;
+            }
+        };
+
+        fetchNotifications();
     }, []);
 
     return (
@@ -46,8 +63,15 @@ export default function AppView() {
                 Welcome back
             </Typography>
 
+            <AppProfile
+                appointments={appointments}
+                animals={inventoryRecords.length}
+                animalCount={totalAnimalCount}
+                posts={caseStudies}
+            />
+
             <Grid container spacing={3}>
-                <Grid xs={12} sm={6} md={3}>
+                {/* <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
                         title="Total Animals"
                         total={totalAnimalCount}
@@ -105,7 +129,7 @@ export default function AppView() {
                         }
                     />
                 </Grid>
-
+                
                 <Grid xs={12} md={6} lg={8}>
                     <AppWebsiteVisits
                         title="Website Visits"
@@ -155,9 +179,9 @@ export default function AppView() {
                             ],
                         }}
                     />
-                </Grid>
+                    </Grid>
 
-                <Grid xs={12} md={6} lg={4}>
+                 <Grid xs={12} md={6} lg={4}>
                     <AppCurrentVisits
                         title="Current Visits"
                         chart={{
@@ -169,7 +193,7 @@ export default function AppView() {
                             ],
                         }}
                     />
-                </Grid>
+                </Grid> */}
 
                 <Grid xs={12} md={6} lg={8}>
                     <AppConversionRates
@@ -192,7 +216,7 @@ export default function AppView() {
                     />
                 </Grid>
 
-                <Grid xs={12} md={6} lg={4}>
+                {/* <Grid xs={12} md={6} lg={4}>
                     <AppCurrentSubject
                         title="Current Subject"
                         chart={{
@@ -220,113 +244,19 @@ export default function AppView() {
                             ],
                         }}
                     />
-                </Grid>
+                </Grid> */}
 
                 <Grid xs={12} md={6} lg={8}>
                     <AppNewsUpdate
-                        title="News Update"
-                        list={[...Array(5)].map((_, index) => ({
-                            id: faker.string.uuid(),
-                            title: faker.person.jobTitle(),
-                            description: faker.commerce.productDescription(),
-                            image: `/assets/images/covers/cover_${
-                                index + 1
-                            }.jpg`,
-                            postedAt: faker.date.recent(),
+                        title="Notifications"
+                        list={notifications.map((notification, index) => ({
+                            id: notification.id,
+                            title: notification.data.title,
+                            description: notification.data.message,
+                            image: notification.data.eoProfile,
+                            postedAt: notification.created_at,
                         }))}
                     />
-                </Grid>
-
-                <Grid xs={12} md={6} lg={4}>
-                    <Paper elevation={4}>
-                        <AppOrderTimeline
-                            title="Order Timeline"
-                            list={[...Array(5)].map((_, index) => ({
-                                id: faker.string.uuid(),
-                                title: [
-                                    "1983, orders, $4220",
-                                    "12 Invoices have been paid",
-                                    "Order #37745 from September",
-                                    "New order placed #XF-2356",
-                                    "New order placed #XF-2346",
-                                ][index],
-                                type: `order${index + 1}`,
-                                time: faker.date.past(),
-                            }))}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid xs={12} md={6} lg={4}>
-                    <Paper elevation={4}>
-                        <AppTrafficBySite
-                            title="Traffic by Site"
-                            list={[
-                                {
-                                    name: "FaceBook",
-                                    value: 323234,
-                                    icon: (
-                                        <Iconify
-                                            icon="eva:facebook-fill"
-                                            color="#1877F2"
-                                            width={32}
-                                        />
-                                    ),
-                                },
-                                {
-                                    name: "Google",
-                                    value: 341212,
-                                    icon: (
-                                        <Iconify
-                                            icon="eva:google-fill"
-                                            color="#DF3E30"
-                                            width={32}
-                                        />
-                                    ),
-                                },
-                                {
-                                    name: "Linkedin",
-                                    value: 411213,
-                                    icon: (
-                                        <Iconify
-                                            icon="eva:linkedin-fill"
-                                            color="#006097"
-                                            width={32}
-                                        />
-                                    ),
-                                },
-                                {
-                                    name: "Twitter",
-                                    value: 443232,
-                                    icon: (
-                                        <Iconify
-                                            icon="eva:twitter-fill"
-                                            color="#1C9CEA"
-                                            width={32}
-                                        />
-                                    ),
-                                },
-                            ]}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid xs={12} md={6} lg={8}>
-                    <Paper elevation={4}>
-                        <AppTasks
-                            title="Tasks"
-                            list={[
-                                { id: "1", name: "Create FireStone Logo" },
-                                {
-                                    id: "2",
-                                    name: "Add SCSS and JS files if required",
-                                },
-                                { id: "3", name: "Stakeholder Meeting" },
-                                { id: "4", name: "Scoping & Estimations" },
-                                { id: "5", name: "Sprint Showcase" },
-                            ]}
-                        />
-                    </Paper>
                 </Grid>
             </Grid>
         </Container>

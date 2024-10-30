@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
             $table->dateTime('appointment_date');
             $table->text('description')->nullable();
+            $table->text('feedback')->nullable();
             $table->enum('status', ['Requested','Pending', 'Completed', 'Cancelled'])->default('Pending');
             $table->timestamps();
         });

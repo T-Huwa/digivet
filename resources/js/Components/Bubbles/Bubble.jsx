@@ -1,3 +1,4 @@
+import { fToNow } from "@/utils/format-time";
 import { usePage } from "@inertiajs/react";
 
 const Bubble = ({ message }) => {
@@ -25,7 +26,7 @@ const Bubble = ({ message }) => {
                             {message.name}
                         </span>
                         <span className="text-sm font-normal text-gray-500">
-                            {message.created_at}
+                            {fToNow(message.created_at)}
                         </span>
                     </div>
                     <p className="text-sm font-normal py-2.5 text-gray-900">
