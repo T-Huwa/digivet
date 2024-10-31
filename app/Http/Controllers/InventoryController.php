@@ -38,6 +38,7 @@ class InventoryController extends Controller
             'user_id' => $userID, 
             'animal_type' => $request->animal_type,
             'animal_count' => $request->animal_count,
+            'tag_number' => $request->tag_number,
         ]);
 
         $inventoryRecords = Inventory::where('user_id', $request->user()->id)->get();

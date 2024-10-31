@@ -9,7 +9,7 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['farmer_id', 'extension_worker_id','area_id', 'appointment_date', 'description', 'status', 'feedback'];
+    protected $fillable = ['farmer_id', 'extension_worker_id','appointment_date', 'description', 'status', 'feedback'];
 
     public function farmer()
     {

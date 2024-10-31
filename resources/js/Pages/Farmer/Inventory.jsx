@@ -1,3 +1,4 @@
+import Checkbox from "@/Components/Checkbox";
 import DangerButton from "@/Components/DangerButton";
 import DataTable from "@/Components/DataTable";
 import InputError from "@/Components/InputError";
@@ -21,10 +22,12 @@ const Inventory = ({ inventoryRecords }) => {
     const [modalRecord, setModalRecord] = useState(null);
     const [editing, setEditing] = useState(false);
     const [editAnimalCount, setEditAnimalCount] = useState(null);
+    const [usingTags, setUsingTags] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         animal_type: "",
-        animal_count: 0,
+        animal_count: null,
+        tag_number: null,
     });
 
     const columns = [
@@ -176,7 +179,7 @@ const Inventory = ({ inventoryRecords }) => {
                                 />
                             </div>
 
-                            <div className="mt-4">
+                            <div className="my-4">
                                 <InputLabel
                                     htmlFor="animal_count"
                                     value="Number of Animals"
@@ -191,6 +194,7 @@ const Inventory = ({ inventoryRecords }) => {
                                     onChange={(e) =>
                                         setData("animal_count", e.target.value)
                                     }
+                                    disabled={usingTags}
                                 />
 
                                 <InputError
@@ -198,6 +202,47 @@ const Inventory = ({ inventoryRecords }) => {
                                     className="mt-2"
                                 />
                             </div>
+
+                            <div className="flex">
+                                <Checkbox
+                                    name="use_tags"
+                                    id="use_tags"
+                                    className="mx-2"
+                                    onChange={() => setUsingTags(!usingTags)}
+                                />
+                                <InputLabel
+                                    htmlFor="use_tags"
+                                    value="Use Tags"
+                                />
+                            </div>
+
+                            {usingTags && (
+                                <div className="mt-4">
+                                    <InputLabel
+                                        htmlFor="tag_number"
+                                        value="Animal Tag"
+                                    />
+
+                                    <TextInput
+                                        id="tag_number"
+                                        type="number"
+                                        name="tag_number"
+                                        value={data.tag_number}
+                                        className="mt-1 block w-full rounded-md"
+                                        onChange={(e) =>
+                                            setData(
+                                                "tag_number",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+
+                                    <InputError
+                                        message={errors.tag_number}
+                                        className="mt-2"
+                                    />
+                                </div>
+                            )}
 
                             <div className="flex items-center justify-end mt-4">
                                 <PrimaryButton

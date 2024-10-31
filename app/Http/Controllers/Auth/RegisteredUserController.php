@@ -10,33 +10,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-
     /**
      * Display The User List
      */
-    public function index(){
+    public function index()
+    {
         return Inertia::render('Users', [
-            'users' => User::with(['area' => function ($query) {
-                            Area::with(['district' => function ($query) {
-                                    $query->select('id', 'district_name');
-                                }]);
-                        }])
-                        ->get(['id', 'name', 'email', 'area_id', 'role'])
-                        ->map(function($user) {
-                            return [
-                                'id' => $user->id,
-                                'name' => $user->name,
-                                'email' => $user->email,
-                                'role' => $user->role,
-                                'verified' => $user->email_verified_at,
-                                'area_name' => $user->area->name ?? null,
-                                'district_name' => $user->area->district->district_name ?? null,
-                            ];
-                        })
+            'users' => User::with(['area.district' => function ($query) {
+                $query->select('id', 'district_name');
+            }])
+            ->get(['id', 'name', 'email', 'area_id', 'role'])
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'verified' => $user->email_verified_at,
+                    'area_name' => $user->area->name ?? null,
+                    'district_name' => $user->area->district->district_name ?? null,
+                ];
+            }),
         ]);
     }
 
@@ -57,23 +54,29 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'string',
-            'district_id' => 'integer',
-            'area_id' => 'integer',
-            'phone' => 'string',
+            'role' => 'string|nullable',
+            'district_id' => 'integer|nullable',
+            'area_id' => 'integer|nullable',
+            'phone' => 'string|nullable',
         ]);
 
-        $randomNumber = rand(1, 24);
+        // Check if there is already an Extension Worker assigned to the area
+        $areaEoExists = User::where('area_id', $request->area_id)
+            ->where('role', 'Extension Worker')
+            ->exists();
 
-        $areaEo = User::where('area_id', $request->area_id);
+        // Prepare the message based on the existence of an EO
         $message = "User Added Successfully";
         $userArea = $request->area_id;
-        if($request->role === 'Extension Worker' && $areaEo){
+
+        if ($request->role === 'Extension Worker' && $areaEoExists) {
             $message = "User was registered, but failed to add to area because there is already an EO assigned to that area";
-            $userArea = null;
+            $userArea = null; // Don't assign the area if an EO already exists
         }
+
+        $randomNumber = rand(1, 24);
 
         $user = User::create([
             'name' => $request->name,
@@ -87,13 +90,13 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-        
+
         return Inertia::render('Auth/Register', [
             'areas' => Area::all(),
             'success' => true,
-            'eoExists' => true,
+            'eoExists' => $areaEoExists,
             'message' => $message,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 }

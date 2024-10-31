@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('animal_type');
-            $table->integer('animal_count');
+            $table->integer('animal_count')->nullable();
+            $table->integer('tag_number')->nullable();
             $table->timestamps();
         });
     }

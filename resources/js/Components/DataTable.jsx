@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 export default function DataTable({ rows, columns }) {
     return (
@@ -15,6 +15,9 @@ export default function DataTable({ rows, columns }) {
                 pageSizeOptions={[5, 10]}
                 checkboxSelection={false}
                 autoHeight={true}
+                slots={{
+                    toolbar: GridToolbar, // Add toolbar for export options
+                }}
                 sx={{
                     bgcolor: "white",
                     boxShadow: 2,
