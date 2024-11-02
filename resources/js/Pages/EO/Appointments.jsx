@@ -38,18 +38,18 @@ export default function Appointments({ appointments, selectedAppointment }) {
         {
             field: "appointment_date",
             headerName: "Appointment Date",
-            width: 200,
+            flex: 1,
         },
         {
             field: "farmer",
             headerName: "Farmer",
-            width: 200,
+            flex: 1,
         },
-        { field: "status", headerName: "Status", width: 150 },
+        { field: "status", headerName: "Status", flex: 1 },
         {
             field: "description",
             headerName: "Description",
-            width: 150,
+            flex: 1,
             sortable: false,
         },
         {

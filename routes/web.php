@@ -78,7 +78,9 @@ Route::middleware('auth')->prefix('analytics')->group(function (){
 
 Route::middleware('auth')->prefix('chatroom')->group(function (){
     Route::get('/', [MessageController::class, 'index'])->name('chatroom');
+    Route::get('/broadcast', [MessageController::class, 'createBroadcast'])->name('chatroom.broadcast');
     Route::post('/sendMessage', [MessageController::class, 'store'])->name('chatroom.send.message');
+    Route::post('/broadcast/sendMessage', [MessageController::class, 'sendBroadcast'])->name('chatroom.send.broadcast');
     Route::get('/{id}', [MessageController::class, 'show'])->name('chatroom.get.chat.messages');
 });
 

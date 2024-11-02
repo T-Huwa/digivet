@@ -34,9 +34,46 @@ class MessageController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createBroadcast()
     {
-        //
+        return Inertia::render('EO/Broadcast');
+    }
+
+    public function sendBroadcast(Request $request)
+    {
+        $user = $request->user();
+
+        if($user->role !== 'Extension Worker'){
+            abort(404);
+        }
+
+        $message = $request->message;
+
+        // Find all farmers in the same area as the EO
+        $farmers = User::where('role', 'Farmer')
+                        ->where('area_id', $user->area_id)
+                        ->get();
+
+        $messages = [];
+        
+        foreach ($farmers as $farmer) {
+            // Create a message record for each farmer
+            $newMessage = Message::create([
+                'sender_id' => $user->id,
+                'recipient_id' => $farmer->id,
+                'message' => $message,
+            ]);
+
+            // Store each created message in an array for response purposes
+            $messages[] = $newMessage;
+        }
+
+        return response()->json([
+            'success' => 'Messages sent to all farmers in the area',
+            'messages' => $messages,
+        ]);
+
+        abort(404);
     }
 
     /**

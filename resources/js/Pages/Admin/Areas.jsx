@@ -56,12 +56,12 @@ const Areas = ({ areas }) => {
 
     const columns = [
         { field: "id", headerName: "ID", width: 10 },
-        { field: "name", headerName: "Area Name" },
-        { field: "district_name", headerName: "District" },
+        { field: "name", headerName: "Area Name", flex: 1 },
+        { field: "district_name", headerName: "District", flex: 1 },
         {
             field: "actions",
             headerName: "Actions",
-            width: 100,
+            flex: 1,
             sortable: false,
             editable: false,
             renderCell: (params) => (

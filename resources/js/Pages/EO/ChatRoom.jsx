@@ -2,8 +2,8 @@ import ChatMessages from "@/Components/ChatMessages";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import DashboardLayout from "@/Layouts/dashboard";
-import { Head, usePage } from "@inertiajs/react";
-import { Send } from "@mui/icons-material";
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { BroadcastOnHomeOutlined, Send } from "@mui/icons-material";
 import { Avatar, Box, Divider, List, ListItem } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
@@ -37,6 +37,16 @@ const ChatRoom = ({ users }) => {
         <>
             <DashboardLayout>
                 <Head title="ChatRoom" />
+                <Box className="flex-end p-3">
+                    <PrimaryButton
+                        onClick={() =>
+                            router.visit(route("chatroom.broadcast"))
+                        }
+                    >
+                        <BroadcastOnHomeOutlined />
+                    </PrimaryButton>
+                </Box>
+
                 <div className="bg-white flex h-full border-2 border-gray-400 rounded mx-3 p-2">
                     <Box
                         className="p-3"
