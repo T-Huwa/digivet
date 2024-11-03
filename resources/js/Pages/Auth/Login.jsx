@@ -30,7 +30,7 @@ export default function VetLogin({ status, canResetPassword }) {
                 <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                     <div className="flex flex-col items-center mb-6">
                         <div className="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center mb-4">
-                            <span className="text-white text-4xl">🐾</span>
+                            <span className="text-white text-4xl">🐮</span>
                         </div>
                         <h2 className="text-2xl font-bold text-gray-900">
                             DigiVet Login

@@ -20,6 +20,7 @@ export default function Main({ children, sx, ...other }) {
                 flexGrow: 1,
                 height: "100vh",
                 display: "flex",
+                overflowY: "scroll",
                 flexDirection: "column",
                 pt: `${HEADER.H_MOBILE + SPACING}px`,
                 ...(lgUp && {

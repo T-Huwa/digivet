@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tip;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TipController extends Controller
 {
@@ -28,7 +29,14 @@ class TipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Tip::create([
+            'content' => $request->content,
+        ]);
+
+        return Inertia::render('Admin/Tips', [
+            'tips'=>Tip::all(),
+            'message' => "Tip created successfully",
+        ]);
     }
 
     /**
@@ -61,5 +69,19 @@ class TipController extends Controller
     public function destroy(Tip $tip)
     {
         //
+    }
+
+    public function tipsPage()
+    {
+        return Inertia::render('Admin/Tips', ['tips'=>Tip::all()]);
+    }
+
+    public function intelligentTip(Request $request)
+    {
+        $tips = Tip::all();
+        $temp = $request->temp;
+        $season = $request->season;
+
+        return;
     }
 }

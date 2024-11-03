@@ -9,5 +9,5 @@ class Tip extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content'];
+    protected $fillable = ['content', 'animal_type', 'season', 'weather_threshhold'];
 }

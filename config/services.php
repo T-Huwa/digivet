@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'openai' => [
+        'secret'=> env('OPENAI_SECRET'),
+    ],
+
+    'gemini' => [
+        'secret'=> env('GEMINI_AI_SECRET'),
+    ]
+
 ];

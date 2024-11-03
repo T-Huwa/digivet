@@ -17,7 +17,12 @@ import Scrollbar from "@/Components/scrollbar";
 import { NAV } from "./config-layout";
 import { Link, usePage } from "@inertiajs/react";
 import SvgColor from "@/Components/svg-color";
-import { Chat, DateRange, LocationOn } from "@mui/icons-material";
+import {
+    Chat,
+    DateRange,
+    LocationOn,
+    TipsAndUpdates,
+} from "@mui/icons-material";
 
 // ----------------------------------------------------------------------
 
@@ -76,6 +81,11 @@ export default function Nav({ openNav, onCloseNav }) {
             title: "Areas",
             path: "areas",
             icon: <LocationOn />,
+        },
+        {
+            title: "Tips",
+            path: "tips",
+            icon: <TipsAndUpdates />,
         },
     ];
 

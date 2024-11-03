@@ -1,25 +1,13 @@
-import { faker } from "@faker-js/faker";
-
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-
-import Iconify from "@/Components/iconify";
-
-import AppTasks from "../app-tasks";
 import AppNewsUpdate from "../app-news-update";
-import AppOrderTimeline from "../app-order-timeline";
-import AppCurrentVisits from "../app-current-visits";
-import AppWebsiteVisits from "../app-website-visits";
-import AppWidgetSummary from "../app-widget-summary";
-import AppTrafficBySite from "../app-traffic-by-site";
-import AppCurrentSubject from "../app-current-subject";
 import AppConversionRates from "../app-conversion-rates";
-import { Paper } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { usePage } from "@inertiajs/react";
 import AppProfile from "../app-profile";
+import WeatherDisplay from "@/Components/WeatherDisplay";
 
 // ----------------------------------------------------------------------
 
@@ -27,8 +15,6 @@ export default function AppView() {
     const inventoryRecords = usePage().props.inventoryRecords;
     const appointments = usePage().props.appointments;
     const caseStudies = usePage().props.caseStudies;
-
-    console.log(usePage().props);
 
     const [totalAnimalCount, setTotalAnimalCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -194,6 +180,10 @@ export default function AppView() {
                         }}
                     />
                 </Grid> */}
+
+                <Grid xs={12} md={6} lg={4}>
+                    <WeatherDisplay />
+                </Grid>
 
                 <Grid xs={12} md={6} lg={8}>
                     <AppConversionRates

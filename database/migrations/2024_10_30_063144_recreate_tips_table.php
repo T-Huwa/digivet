@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('tips');
         Schema::create('tips', function (Blueprint $table) {
             $table->id();
             $table->text('content');
+            $table->string('animal_type');
+            $table->string('season');
+            $table->integer('weather_threshhold');
             $table->timestamps();
         });
     }

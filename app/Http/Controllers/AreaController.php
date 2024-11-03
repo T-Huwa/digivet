@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\area;
+use App\Models\District;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -160,4 +161,5 @@ class AreaController extends Controller
         $area->delete();
         return redirect(route('areas'));
     }
+
 }

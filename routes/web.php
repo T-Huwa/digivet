@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiAPIController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
@@ -85,7 +86,11 @@ Route::middleware('auth')->prefix('chatroom')->group(function (){
 });
 
 Route::prefix('tips')->group(function (){
-    Route::get('/', [TipController::class, 'index'])->name('tips.getAll');
+    Route::get('/get-all', [TipController::class, 'index'])->name('tips.getAll');
+    Route::get('/', [TipController::class, 'tipsPage'])->name('tips');
+    Route::middleware('admin')->post('/', [TipController::class, 'store'])->name('tips.new');
+    Route::get('/ai/getOne', [AiAPIController::class, 'getTip'])->name('tips.ai.getOne');
+    Route::get('/ai/gemini/getOne', [AiAPIController::class, 'queryGemini'])->name('tips.gemini.ai.getOne');
 });
 
 require __DIR__.'/auth.php';
