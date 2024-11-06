@@ -102,17 +102,17 @@ class AppointmentController extends Controller
             return Inertia::render('Farmer/Appointments',['error' => 'No Extension worker found for this area.'], 404);
         }
 
-        // Create the appointment
         $appointment = Appointment::create([
             'farmer_id' => $user->id,
             'extension_worker_id' => $extensionWorker->id,
             'area_id' => $farmerArea,
             'appointment_date' => $request->appointment_date,
+            'animal_type' => $request->animal_type,
             'description' => $request->description,
             'status' => 'Requested',
         ]);
 
-        // Notify about the new Appointment
+        // notification to EO
         $extensionWorker->notify(new AppointmentNotification($appointment, 'Requested'));
 
         return Inertia::render('Farmer/Appointments', ['appointments'=>Appointment::all(), 'success'=>'Appointment requested']);

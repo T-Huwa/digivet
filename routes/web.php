@@ -10,6 +10,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TipController;
 use App\Models\Tip;
 use Illuminate\Foundation\Application;
@@ -75,6 +76,7 @@ Route::middleware('auth')->prefix('caseStudies')->group(function () {
 
 Route::middleware('auth')->prefix('analytics')->group(function (){
     Route::get('/getAll', [AnalyticsController::class, 'index'])->name('analytics.getAll');
+    Route::get('/printReport', [ReportsController::class, 'printReport'])->name('report.print');
 });
 
 Route::middleware('auth')->prefix('chatroom')->group(function (){
@@ -92,5 +94,7 @@ Route::prefix('tips')->group(function (){
     Route::get('/ai/getOne', [AiAPIController::class, 'getTip'])->name('tips.ai.getOne');
     Route::get('/ai/gemini/getOne', [AiAPIController::class, 'queryGemini'])->name('tips.gemini.ai.getOne');
 });
+
+Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
 
 require __DIR__.'/auth.php';

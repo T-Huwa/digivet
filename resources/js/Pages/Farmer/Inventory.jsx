@@ -40,7 +40,13 @@ const Inventory = ({ inventoryRecords }) => {
         },
         {
             field: "animal_count",
-            headerName: "Number",
+            headerName: "Count",
+            minWidth: 100,
+            flex: 1,
+        },
+        {
+            field: "tag_number",
+            headerName: "Tag Number",
             minWidth: 100,
             flex: 1,
         },

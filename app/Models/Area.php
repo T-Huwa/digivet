@@ -11,9 +11,21 @@ class Area extends Model
 
     protected $fillable = ['name', 'district_id'];
 
-    // Define the relationship with the District model
     public function district()
     {
         return $this->belongsTo(District::class, 'district_id');
+    }
+
+    public function farmers()
+    {
+        return $this->hasMany(User::class, 'area_id')
+                    ->where('role', 'Farmer');
+    }
+
+    public function extensionOfficer()
+    {
+        return $this->hasOne(User::class, 'area_id')
+                    ->where('role', 'Extension Worker')
+                    ->where('area_id', $this->id);
     }
 }

@@ -32,9 +32,14 @@ class User extends Authenticatable
         return $this->belongsTo(Area::class, 'area_id');
     }
 
+    public function district()
+    {
+        return $this->belongsToThrough(District::class, Area::class);
+    }
+
     public function inventory()
     {
-        return $this->hasOne(Inventory::class,);
+        return $this->hasMany(Inventory::class,);
     }
 
     public function appointments()
@@ -42,9 +47,19 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'extension_worker_id');
     }
 
+    public function farmerAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'farmer_id');
+    }
+
     public function caseStudies()
     {
         return $this->hasMany(CaseStudies::class, 'extension_worker_id');
+    }
+
+    public function animals()
+    {
+        return $this->hasMany(Inventory::class, 'user_id');
     }
 
     /**

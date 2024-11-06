@@ -13,6 +13,7 @@ import { Textarea } from "@headlessui/react";
 const AppointmentForm = () => {
     const { data, setData, post, processing, errors, reset } = useForm({
         appointment_date: null,
+        animal_type: "",
         description: "",
     });
 
@@ -97,6 +98,29 @@ const AppointmentForm = () => {
 
                         <InputError
                             message={errors.description}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    <div className="mt-4">
+                        <InputLabel
+                            htmlFor="animal_type"
+                            value="Animal Type (add tag if necessary)"
+                        />
+
+                        <TextInput
+                            id="animal_type"
+                            type="textarea"
+                            name="animal_type"
+                            value={data.animal_type}
+                            className="mt-1 block w-full rounded-md"
+                            onChange={(e) =>
+                                setData("animal_type", e.target.value)
+                            }
+                        />
+
+                        <InputError
+                            message={errors.animal_type}
                             className="mt-2"
                         />
                     </div>
