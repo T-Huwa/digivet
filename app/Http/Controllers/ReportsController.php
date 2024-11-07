@@ -248,6 +248,7 @@ class ReportsController extends Controller
         ];
         // ['candidates'][0]['content']['parts'][0]['text']
     }
+//$inventoryRecords = Inventory::where('user_id', $user->id)->get(); 'inventoryRecords' => $inventoryRecords,
 
     private function getAnimalDetails(){
         $user = $user ?? Auth::user();

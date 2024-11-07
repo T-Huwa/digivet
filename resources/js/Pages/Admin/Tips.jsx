@@ -5,7 +5,6 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import DashboardLayout from "@/Layouts/dashboard";
-import { Textarea } from "@headlessui/react";
 import { Head, useForm } from "@inertiajs/react";
 import { Add } from "@mui/icons-material";
 import { Box, List, ListItem, Typography } from "@mui/material";
@@ -20,6 +19,8 @@ const Tips = ({ tips }) => {
     const { data, setData, post, processing, errors, reset } = useForm({
         content: "",
         animal_type: "",
+        season: "",
+        weather_threshhold: 20,
     });
 
     function closeModal() {
@@ -105,7 +106,6 @@ const Tips = ({ tips }) => {
                                             htmlFor="animal_type"
                                             value="Animal Type"
                                         />
-
                                         <TextInput
                                             id="animal_type"
                                             type="text"
@@ -119,7 +119,6 @@ const Tips = ({ tips }) => {
                                                 )
                                             }
                                         />
-
                                         <InputError
                                             message={errors.animal_type}
                                             className="mt-2"
@@ -131,7 +130,6 @@ const Tips = ({ tips }) => {
                                             htmlFor="content"
                                             value="Add Tip Content"
                                         />
-
                                         <TextInput
                                             id="content"
                                             type="textarea"
@@ -145,9 +143,58 @@ const Tips = ({ tips }) => {
                                                 )
                                             }
                                         />
-
                                         <InputError
                                             message={errors.content}
+                                            className="mt-2"
+                                        />
+                                    </div>
+
+                                    {/* Season Field */}
+                                    <div className="mt-4">
+                                        <InputLabel
+                                            htmlFor="season"
+                                            value="Season"
+                                        />
+                                        <TextInput
+                                            id="season"
+                                            type="text"
+                                            name="season"
+                                            value={data.season}
+                                            className="mt-1 block w-full"
+                                            onChange={(e) =>
+                                                setData(
+                                                    "season",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <InputError
+                                            message={errors.season}
+                                            className="mt-2"
+                                        />
+                                    </div>
+
+                                    {/* Weather Threshold Field */}
+                                    <div className="mt-4">
+                                        <InputLabel
+                                            htmlFor="weather_threshhold"
+                                            value="Weather Threshold (°C)"
+                                        />
+                                        <TextInput
+                                            id="weather_threshhold"
+                                            type="number"
+                                            name="weather_threshhold"
+                                            value={data.weather_threshhold}
+                                            className="mt-1 block w-full"
+                                            onChange={(e) =>
+                                                setData(
+                                                    "weather_threshhold",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <InputError
+                                            message={errors.weather_threshhold}
                                             className="mt-2"
                                         />
                                     </div>

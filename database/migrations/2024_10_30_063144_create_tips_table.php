@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->text('content');
             $table->string('animal_type');
-            $table->string('season');
-            $table->integer('weather_threshhold');
+            $table->string('season')->nullable();
+            $table->integer('weather_threshhold')->nullable();
             $table->timestamps();
         });
     }

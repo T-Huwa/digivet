@@ -1,25 +1,18 @@
 import PropTypes from "prop-types";
-
-import { Box } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-
+import { Box, Paper, Card, CardHeader } from "@mui/material";
+import Chart, { useChart } from "@/Components/chart";
 import { fNumber } from "@/utils/format-number";
 
-import Chart, { useChart } from "@/Components/chart";
-import { Paper } from "@mui/material";
-
-// ----------------------------------------------------------------------
-
-export default function AppConversionRates({
-    title,
+export default function AppRegistrationRates({
+    title = "Animal Registration Rates",
     subheader,
     chart,
     ...other
 }) {
     const { colors, series, options } = chart;
 
-    const chartSeries = series.map((i) => i.value);
+    // Get registration rates as series data
+    const chartSeries = series.map((item) => item.value);
 
     const chartOptions = useChart({
         colors,
@@ -40,7 +33,7 @@ export default function AppConversionRates({
             },
         },
         xaxis: {
-            categories: series.map((i) => i.label),
+            categories: series.map((item) => item.label), // Animal types as labels
         },
         ...options,
     });
@@ -65,8 +58,17 @@ export default function AppConversionRates({
     );
 }
 
-AppConversionRates.propTypes = {
-    chart: PropTypes.object,
-    subheader: PropTypes.string,
+AppRegistrationRates.propTypes = {
     title: PropTypes.string,
+    subheader: PropTypes.string,
+    chart: PropTypes.shape({
+        colors: PropTypes.array,
+        series: PropTypes.arrayOf(
+            PropTypes.shape({
+                label: PropTypes.string, // Animal type
+                value: PropTypes.number, // Registration rate
+            })
+        ),
+        options: PropTypes.object,
+    }),
 };

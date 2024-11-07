@@ -31,6 +31,9 @@ class TipController extends Controller
     {
         Tip::create([
             'content' => $request->content,
+            'animal_type' => $request->animal_type,
+            'season' => $request->season,
+            'weather_threshhold' => $request->weather_threshhold,
         ]);
 
         return Inertia::render('Admin/Tips', [

@@ -28,7 +28,6 @@ const AppProfile = ({ animals, animalCount, appointments, posts }) => {
 
             const weatherData = await weatherResponse.json();
 
-            // Now fetch the tip using the weather data
             const tipResponse = await fetch(
                 route("tips.gemini.ai.getOne") +
                     `?weatherData=${JSON.stringify(weatherData)}`
@@ -39,9 +38,7 @@ const AppProfile = ({ animals, animalCount, appointments, posts }) => {
             }
 
             const data = await tipResponse.json();
-            //console.log(data.tip.tip);
 
-            // Set the tip based on the response
             setTip(data.tip || "No tip available for the current conditions.");
         } catch (err) {
             console.error("Error:", err);
@@ -116,7 +113,11 @@ const AppProfile = ({ animals, animalCount, appointments, posts }) => {
             </div>
             <h3 className="text-xl font-bold">Tip Of the Day</h3>
             <p className="text-gray-300 text-center text-md font-normal">
-                {tipLoading ? "Loading tip..." : tip}
+                {tipLoading
+                    ? "Loading tip..."
+                    : typeof tip === "string"
+                    ? tip
+                    : tip.content}
             </p>
             {error && <p className="text-red-500">{error}</p>}
         </div>

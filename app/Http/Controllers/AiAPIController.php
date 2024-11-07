@@ -33,13 +33,14 @@ class AiAPIController extends Controller
 
     public function queryGemini(Request $request)
     {
-        $tips = Tip::all();
-
         $userId = Auth::id();
         $animals = Inventory::where('user_id', $userId)->get(['animal_type']);
-
         $weatherData = $request->input('weatherData');
 
+        // All tips for fallback selection based on weather threshold
+        $tips = Tip::all();
+
+        // Send the request to the Gemini API
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . config('services.gemini.secret'), [
@@ -58,11 +59,23 @@ class AiAPIController extends Controller
 
         $json_response = $response->json();
 
-        // Extract the tip from the response
         $tipText = '';
         if (isset($json_response['candidates'][0]['content']['parts'][0]['text'])) {
-            // Remove the code block formatting
             $tipText = json_decode(trim($json_response['candidates'][0]['content']['parts'][0]['text'], "```json\n"));
+        }
+
+        // If no relevant tip is found from the API, select a random tip based on weather_threshhold
+        if (empty($tipText->tip)) {
+            // Assuming weatherData contains a 'temperature' key
+            $currentWeather = $weatherData['temperature'] ?? 0;
+
+            // Filter tips based on weather_threshhold and select a random tip
+            $filteredTips = $tips->filter(function ($tip) use ($currentWeather) {
+                return $currentWeather >= $tip->weather_threshhold;
+            });
+
+            $randomTip = $filteredTips->isNotEmpty() ? $filteredTips->random() : null;
+            $tipText = $randomTip ? (object) ['tip' => $randomTip->content] : (object) ['tip' => 'No suitable tip available.'];
         }
 
         return response()->json([
@@ -70,5 +83,6 @@ class AiAPIController extends Controller
             'raw_response' => $json_response // Include raw response for debugging if needed
         ]);
     }
+
 
 }
