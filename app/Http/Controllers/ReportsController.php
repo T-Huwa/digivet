@@ -153,14 +153,14 @@ class ReportsController extends Controller
                     ->orWhere('status', 'Completed')
                     ->orderBy('appointment_date', 'desc')
                     ->take(3)
-                    ->get(['appointment_date', 'description as issue', 'feedback as notes'])
+                    ->get(['appointment_date', 'service as issue', 'feedback as notes'])
                     ->toArray();
 
                 $upcomingAppointments = $user->farmerAppointments()
                     ->where('appointment_date', '>=', now())
                     ->orderBy('appointment_date')
                     ->take(2)
-                    ->get(['appointment_date', 'description as purpose'])
+                    ->get(['appointment_date', 'service as purpose'])
                     ->toArray();
 
 

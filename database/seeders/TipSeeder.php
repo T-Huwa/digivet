@@ -7,29 +7,44 @@ use App\Models\Tip;
 
 class TipSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
         $tips = [
-            ['content' => 'Ensure animals have a balanced diet with the necessary nutrients.'],
-            ['content' => 'Provide fresh and clean water daily for optimal health.'],
-            ['content' => 'Vaccinate animals according to veterinary schedules to prevent diseases.'],
-            ['content' => 'Regularly check and treat animals for internal and external parasites.'],
-            ['content' => 'Provide proper shelter to protect animals from harsh weather conditions.'],
-            ['content' => 'Allow animals sufficient space for exercise to promote physical and mental health.'],
-            ['content' => 'Observe animals daily for signs of illness or distress.'],
-            ['content' => 'Regularly clean animal pens to prevent disease spread.'],
-            ['content' => 'Plan breeding to avoid overpopulation and ensure healthy offspring.'],
-            ['content' => 'Regularly check and trim hooves to prevent infections.'],
-            ['content' => 'Adjust care routines based on seasonal needs like extra bedding in winter.'],
-            ['content' => 'Provide enough space to reduce stress and prevent injury.'],
-            ['content' => 'Dispose of waste properly to maintain a clean environment.'],
-            ['content' => 'Secure enclosures to prevent attacks from predators.'],
-            ['content' => 'Check animals for any signs of abnormal behavior.'],
-            ['content' => 'Wean young animals at the right time for health and growth.'],
-            ['content' => 'Maintain records of all vaccinations for future reference.'],
-            ['content' => 'Regularly inspect fences for security and repairs.'],
-            ['content' => 'Provide shade and water to manage heat stress in hot seasons.'],
-            ['content' => 'Have an emergency plan for disease outbreaks or natural disasters.'],
+            [
+                'content' => 'Provide plenty of water and shade to keep animals cool.',
+                'animal_type' => 'Cattle',
+                'season' => 'Summer',
+                'weather_threshhold' => 30, // Temperature in Celsius
+            ],
+            [
+                'content' => 'Increase feed to help animals maintain energy in colder months.',
+                'animal_type' => 'Sheep',
+                'season' => 'Winter',
+                'weather_threshhold' => -5,
+            ],
+            [
+                'content' => 'Ensure vaccinations are up-to-date before the rainy season.',
+                'animal_type' => 'Goat',
+                'season' => 'Spring',
+                'weather_threshhold' => 15,
+            ],
+            [
+                'content' => 'Provide shelter during heavy rainfall to prevent disease.',
+                'animal_type' => 'Poultry',
+                'season' => 'Rainy',
+                'weather_threshhold' => 20,
+            ],
+            [
+                'content' => 'Inspect animals daily for ticks during humid conditions.',
+                'animal_type' => 'Cattle',
+                'season' => 'Autumn',
+                'weather_threshhold' => 25,
+            ],
         ];
 
         foreach ($tips as $tip) {

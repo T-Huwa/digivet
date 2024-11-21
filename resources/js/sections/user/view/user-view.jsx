@@ -29,7 +29,7 @@ import { Add } from "@mui/icons-material";
 // ----------------------------------------------------------------------
 
 export default function UserPage({ users }) {
-    console.log(users);
+    //console.log(users);
 
     const [page, setPage] = useState(0);
 
@@ -139,6 +139,7 @@ export default function UserPage({ users }) {
                                         { id: "name", label: "Name" },
                                         { id: "email", label: "Email" },
                                         { id: "role", label: "Role" },
+                                        { id: "phone", label: "Phone Number" },
                                         {
                                             id: "isVerified",
                                             label: "Verified",
@@ -160,6 +161,7 @@ export default function UserPage({ users }) {
                                                 key={row.id}
                                                 name={row.name}
                                                 role={row.role}
+                                                phone={row.phone}
                                                 email={row.email}
                                                 area_name={
                                                     row.area_name +

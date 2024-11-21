@@ -7,6 +7,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CaseStudyController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +29,8 @@ Route::get('/', function () {
 Route::get('/dashboard', [AnalyticsController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/users', [RegisteredUserController::class, 'index'])->middleware(['auth', 'admin'])->name('users');
+
+Route::post('/mail/signup', [MailController::class, 'notifyAdmin'])->name('mail.notifyAdmin');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

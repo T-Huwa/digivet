@@ -22,13 +22,14 @@ class RegisteredUserController extends Controller
             'users' => User::with(['area.district' => function ($query) {
                 $query->select('id', 'district_name');
             }])
-            ->get(['id', 'name', 'email', 'area_id', 'role'])
+            ->get(['id', 'name', 'phone', 'email', 'area_id', 'role'])
             ->map(function ($user) {
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role,
+                    'phone' => $user->phone,
                     'verified' => $user->email_verified_at,
                     'area_name' => $user->area->name ?? null,
                     'district_name' => $user->area->district->district_name ?? null,

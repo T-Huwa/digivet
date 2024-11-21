@@ -1,5 +1,6 @@
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
+import SignUpForm from "@/Components/SignUpForm";
 import TextInput from "@/Components/TextInput";
 import { MapIcon, PhoneIcon } from "@heroicons/react/outline";
 import { Head, Link, router } from "@inertiajs/react";
@@ -20,22 +21,31 @@ export default function LandingPage() {
                         Login
                     </PrimaryButton>
                 </div>
-                <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-green-50">
-                    <div className="container px-4 md:px-6">
+                <section
+                    className="relative w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-green-50 bg-cover bg-center"
+                    style={{
+                        backgroundImage: "url('/assets/images/cows.jpg')",
+                    }}
+                >
+                    {/* White and blur overlay */}
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+
+                    {/* Content */}
+                    <div className="relative container px-4 md:px-6">
                         <div className="flex flex-col items-center space-y-4 text-center">
                             <div className="space-y-2">
-                                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                                <h1 className="text-3xl text-gray-100 font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
                                     DigiVet: Connecting Farmers with Veterinary
                                     Care
                                 </h1>
-                                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-300">
                                     Empowering animal farmers with quick access
                                     to veterinary extension workers in their
                                     area.
                                 </p>
                             </div>
                             <div className="space-x-4">
-                                <PrimaryButton asChild>
+                                <PrimaryButton>
                                     <Link href="/login">Get Started</Link>
                                 </PrimaryButton>
                                 <SecondaryButton variant="outline">
@@ -46,7 +56,7 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
+                <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-200">
                     <div className="container px-4 md:px-6">
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
                             How DigiVet Helps
@@ -94,9 +104,14 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                <section className="w-full py-12 md:py-24 lg:py-32 bg-green-50">
+                <section
+                    className="w-full py-12 md:py-24 lg:py-32 bg-green-50"
+                    style={{
+                        backgroundImage: "url('/assets/images/sheep.jpg')",
+                    }}
+                >
                     <div className="container px-4 md:px-6">
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+                        <h2 className="text-gray-300 text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
                             Success Stories
                         </h2>
                         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
@@ -151,42 +166,7 @@ export default function LandingPage() {
                                     you. Sign up today!
                                 </p>
                             </div>
-                            <div className="w-full max-w-sm space-y-2">
-                                <form className="flex flex-col space-y-2">
-                                    <TextInput
-                                        className="max-w-lg flex-1 bg-white text-black"
-                                        placeholder="Your Name"
-                                        type="text"
-                                    />
-                                    <TextInput
-                                        className="max-w-lg flex-1 bg-white text-black"
-                                        placeholder="Email Address"
-                                        type="email"
-                                    />
-                                    <select className="max-w-lg flex-1 bg-white text-black border border-gray-300 rounded-md p-2">
-                                        <option value="">I am a...</option>
-                                        <option value="farmer">Farmer</option>
-                                        <option value="vet">
-                                            Veterinary Professional
-                                        </option>
-                                    </select>
-                                    <PrimaryButton
-                                        className="text-green-600 hover:bg-green-50"
-                                        type="submit"
-                                    >
-                                        Sign Up for DigiVet
-                                    </PrimaryButton>
-                                </form>
-                                <p className="text-xs text-green-100">
-                                    By signing up, you agree to our{" "}
-                                    <Link
-                                        className="underline underline-offset-2"
-                                        href="#"
-                                    >
-                                        Terms & Conditions
-                                    </Link>
-                                </p>
-                            </div>
+                            <SignUpForm />
                         </div>
                     </div>
                 </section>

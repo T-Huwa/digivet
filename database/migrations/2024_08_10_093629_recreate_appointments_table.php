@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('appointments');
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('farmer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('extension_worker_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade')->nullable();
             $table->dateTime('appointment_date');
             $table->text('description')->nullable();
+            $table->text('service')->nullable();
             $table->text('feedback')->nullable();
+            $table->text('animal_type')->nullable();
             $table->enum('status', ['Requested','Pending', 'Completed', 'Cancelled'])->default('Pending');
             $table->timestamps();
         });

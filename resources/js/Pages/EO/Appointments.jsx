@@ -48,7 +48,7 @@ export default function Appointments({ appointments, selectedAppointment }) {
         { field: "status", headerName: "Status", flex: 1 },
         {
             field: "description",
-            headerName: "Description",
+            headerName: "Service",
             flex: 1,
             sortable: false,
         },

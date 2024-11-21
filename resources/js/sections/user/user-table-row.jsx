@@ -24,6 +24,7 @@ export default function UserTableRow({
     avatarUrl,
     area_name,
     role,
+    phone,
     isVerified,
     email,
     handleClick,
@@ -78,6 +79,8 @@ export default function UserTableRow({
                 <TableCell>{email}</TableCell>
 
                 <TableCell>{role}</TableCell>
+
+                <TableCell>{phone}</TableCell>
 
                 <TableCell align="center">
                     {isVerified ? "Yes" : "No"}

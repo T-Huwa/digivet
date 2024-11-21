@@ -1,20 +1,24 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, FormControl, MenuItem, Select, Typography } from "@mui/material";
 import DashboardLayout from "@/Layouts/dashboard";
 import TextInput from "@/Components/TextInput";
 import InputLabel from "@/Components/InputLabel";
 import InputError from "@/Components/InputError";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import SecondaryButton from "@/Components/SecondaryButton";
 import Modal from "@/Components/Modal";
 import { Textarea } from "@headlessui/react";
+import { useEffect } from "react";
 
-const AppointmentForm = () => {
+const AppointmentForm = ({ busy }) => {
+    //  console.log(busy);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         appointment_date: null,
         animal_type: "",
         description: "",
+        service: "",
     });
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -34,10 +38,16 @@ const AppointmentForm = () => {
 
         post(route("appointments.create"), {
             onSuccess: (response) => {
-                console.log("Success:", response.props.message);
-                setTitle("Success");
-                setContent(response.props.message + "!🔥😀🔥🔥");
-                reset(data);
+                if (response.props.busy) {
+                    console.log("Failed: " + response.props.busy);
+                    setTitle("Failed to book appointment");
+                    setContent(response.props.busy + "!😡");
+                } else {
+                    console.log("Success:", response.props.message);
+                    setTitle("Success");
+                    setContent(response.props.message + "!🔥😀🔥🔥");
+                }
+                reset();
             },
             onError: (error) => {
                 setTitle("Error!");
@@ -51,8 +61,17 @@ const AppointmentForm = () => {
         });
     };
 
+    useEffect(() => {
+        if (busy) {
+            setTitle("Failed to book appointment");
+            setContent(busy);
+            setModalOpen(true);
+        }
+    }, []);
+
     return (
         <DashboardLayout>
+            <Head title="New Appointment" />
             <Box className="sm:mx-2 md:mx-16 mt-6 p-12 border-2 rounded-md bg-white">
                 <Typography variant="h5" className="m-2 text-center">
                     Book an Appointment
@@ -125,6 +144,37 @@ const AppointmentForm = () => {
                         />
                     </div>
 
+                    <FormControl className="mt-4" fullWidth>
+                        <InputLabel id="service-label" className="mt-4">
+                            Service
+                        </InputLabel>
+                        <Select
+                            labelId="service-label"
+                            id="service"
+                            value={data.service}
+                            label="Role"
+                            onChange={(e) => setData("service", e.target.value)}
+                        >
+                            <MenuItem value="Pregnant Diagnosis">
+                                Pregnant Diagnosis
+                            </MenuItem>
+                            <MenuItem value="Treatment">Treatment</MenuItem>
+                            <MenuItem value="Dipping And Spraying">
+                                Dipping And Spraying
+                            </MenuItem>
+                            <MenuItem value="Ear Tagging">Ear Tagging</MenuItem>
+                            <MenuItem value="Teeth Clipping">
+                                Teeth Clipping
+                            </MenuItem>
+                            <MenuItem value="Vaccination">Vaccination</MenuItem>
+                            <MenuItem value="Castration">Castration</MenuItem>
+                            <MenuItem value="Khola Building">
+                                Khola Building
+                            </MenuItem>
+                        </Select>
+                        <InputError message={errors.service} className="mt-2" />
+                    </FormControl>
+
                     <div className="flex items-center justify-end mt-4">
                         <PrimaryButton className="ms-4" disabled={processing}>
                             Book
@@ -132,6 +182,7 @@ const AppointmentForm = () => {
                     </div>
                 </form>
             </Box>
+
             <Modal show={modalOpen} onClose={closeModal}>
                 <Box className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">

@@ -32,6 +32,13 @@ export default function Appointments({ appointments }) {
             flex: 1,
         },
         {
+            field: "service",
+            headerName: "Service",
+            minWidth: 150,
+            sortable: false,
+            flex: 1,
+        },
+        {
             field: "feedback",
             headerName: "Feedback",
             minWidth: 150,
