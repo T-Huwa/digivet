@@ -14,8 +14,9 @@ import {
     Pie,
     Cell,
 } from "recharts";
-import PrintComponent from "../PrintComponent";
 import { useRef } from "react";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import SecondaryButton from "@/Components/SecondaryButton";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
@@ -27,11 +28,102 @@ export default function Reports({ report }) {
         window.print();
     };
 
-    const aiReport = report.aiReport;
-    const overallStats = report.overallStats;
-    const farmerDistribution = report.farmerDistribution;
-    const animalDistribution = report.animalDistribution;
-    const extensionOfficerCoverage = report.extensionOfficerCoverage;
+    //const aiReport = report.aiReport;
+
+    const {
+        overallStats,
+        farmerDistribution,
+        animalDistribution,
+        extensionOfficerCoverage,
+    } = report;
+
+    const exportPDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("DigiVet System Reports", 20, 10);
+
+        doc.text("Overall Statistics", 14, 20);
+        doc.autoTable({
+            head: [["Metric", "Value"]],
+            body: [
+                ["Total Farmers", overallStats.totalFarmers],
+                ["Total Animals", overallStats.totalAnimals],
+                ["Total Areas", overallStats.totalAreas],
+                ["Total Districts", overallStats.totalDistricts],
+            ],
+            startY: 25,
+        });
+
+        doc.text(
+            "Farmer Distribution by Area",
+            14,
+            doc.lastAutoTable.finalY + 10
+        );
+        doc.autoTable({
+            head: [["Area", "Farmers"]],
+            body: farmerDistribution.map((item) => [item.name, item.farmers]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.text("Animal Distribution", 14, doc.lastAutoTable.finalY + 10);
+        doc.autoTable({
+            head: [["Animal Type", "Count"]],
+            body: animalDistribution.map((item) => [item.name, item.value]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.text(
+            "Extension Officer Coverage",
+            14,
+            doc.lastAutoTable.finalY + 10
+        );
+        doc.autoTable({
+            head: [["Area", "Farmers", "Extension Officer"]],
+            body: extensionOfficerCoverage.map((item) => [
+                item.name,
+                item.farmers,
+                item.officerName || "N/A",
+            ]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.save("DigiVet_Reports.pdf");
+    };
+
+    const exportCSV = () => {
+        const csvRows = [
+            ["Metric", "Value"],
+            ["Total Farmers", overallStats.totalFarmers],
+            ["Total Animals", overallStats.totalAnimals],
+            ["Total Areas", overallStats.totalAreas],
+            ["Total Districts", overallStats.totalDistricts],
+            "",
+            ["Area", "Farmers"],
+            ...farmerDistribution.map((item) => [item.name, item.farmers]),
+            "",
+            ["Animal Type", "Count"],
+            ...animalDistribution.map((item) => [item.name, item.value]),
+            "",
+            ["Area", "Farmers", "Extension Officer"],
+            ...extensionOfficerCoverage.map((item) => [
+                item.name,
+                item.farmers,
+                item.officerName || "N/A",
+            ]),
+        ];
+
+        const csvContent = csvRows.map((row) => row.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.setAttribute("hidden", "");
+        a.setAttribute("href", url);
+        a.setAttribute("download", "DigiVet_Reports.csv");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     return (
         <DashboardLayout>
@@ -41,7 +133,15 @@ export default function Reports({ report }) {
                     <h1 className="text-3xl font-bold text-gray-900 mb-8">
                         DigiVet System Reports
                     </h1>
-
+                    {/* Buttons for Export */}
+                    <div className="flex space-x-4 mb-8">
+                        <SecondaryButton onClick={exportPDF}>
+                            Export as PDF
+                        </SecondaryButton>
+                        <SecondaryButton onClick={exportCSV}>
+                            Export as CSV
+                        </SecondaryButton>
+                    </div>
                     {/* Overall Statistics */}
                     <div className="bg-white shadow rounded-lg p-6 mb-8">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -82,7 +182,6 @@ export default function Reports({ report }) {
                             </div>
                         </div>
                     </div>
-
                     {/* Farmer Distribution */}
                     <div className="bg-white shadow rounded-lg p-6 mb-8">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -99,7 +198,6 @@ export default function Reports({ report }) {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-
                     {/* Animal Distribution */}
                     <div className="bg-white shadow rounded-lg p-6 mb-8">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -131,7 +229,6 @@ export default function Reports({ report }) {
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-
                     {/* Extension Officer Coverage */}
                     <div className="bg-white shadow rounded-lg p-6">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -171,7 +268,8 @@ export default function Reports({ report }) {
                         </div>
                     </div>
 
-                    {/** Generated Report */}
+                    {/** Generated Report
+                     * 
                     <div className="bg-white my-8 shadow rounded-lg p-6">
                         <SecondaryButton
                             onClick={printReport}
@@ -195,6 +293,7 @@ export default function Reports({ report }) {
                         </SecondaryButton>
                         <PrintComponent data={aiReport} ref={componentRef} />
                     </div>
+                    */}
                     <br />
                 </div>
             </div>

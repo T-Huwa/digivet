@@ -131,7 +131,9 @@ class ReportsController extends Controller
                 ];
                 return Inertia::render('EO/EOReports', ['reportsData' => $reportData]);
 
+            
             case 'Farmer':
+
                 $farmerInfo = [
                     'name' => $user->name,
                     'area' => $user->area->name ?? 'Unknown', 
@@ -228,23 +230,23 @@ class ReportsController extends Controller
                 ];
             });
 
-        $reportData = [
+        /*$reportData = [
             'overallStats' => $overallStats,
             'farmerDistribution' => $farmerDistribution,
             'animalDistribution' => $animalDistribution,
             'extensionOfficerCoverage' => $extensionOfficerCoverage,
-        ];
+        ];*/
 
-        $jsonReportData = json_encode($reportData);
+        //$jsonReportData = json_encode($reportData);
 
-        $aiReport = $this->generateReport($jsonReportData)['candidates'][0]['content']['parts'][0]['text'];
+        //$aiReport = $this->generateReport($jsonReportData)['candidates'][0]['content']['parts'][0]['text'];
 
         return (object) [
             'overallStats' => $overallStats,
             'farmerDistribution' => $farmerDistribution,
             'animalDistribution' => $animalDistribution,
             'extensionOfficerCoverage' => $extensionOfficerCoverage,
-            'aiReport' => $aiReport,
+            // 'aiReport' => $aiReport,
         ];
         // ['candidates'][0]['content']['parts'][0]['text']
     }
@@ -307,7 +309,6 @@ class ReportsController extends Controller
 
         return $animalDistribution;
     }
-
 
     private function generateReport($reportData) 
     {
