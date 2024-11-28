@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
+use Twilio\Rest\Client;
+
 
 class MessageController extends Controller
 {
@@ -43,28 +46,39 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        if($user->role !== 'Extension Worker'){
+        if ($user->role !== 'Extension Worker') {
             abort(404);
         }
 
-        $message = $request->message;
+        $messageContent = $request->message;
 
-        // Find all farmers in the same area as the EO
         $farmers = User::where('role', 'Farmer')
-                        ->where('area_id', $user->area_id)
-                        ->get();
+                    ->where('area_id', $user->area_id)
+                    ->get();
 
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_TOKEN');
+        $messagingServiceSid = env('TWILIO_MESSAGING_SERVICE_SID');
+
+        $client = new Client($sid, $token);
         $messages = [];
-        
+
         foreach ($farmers as $farmer) {
-            // Create a message record for each farmer
             $newMessage = Message::create([
                 'sender_id' => $user->id,
                 'recipient_id' => $farmer->id,
-                'message' => $message,
+                'message' => $messageContent,
             ]);
 
-            // Store each created message in an array for response purposes
+            try {
+                $client->messages->create($farmer->phone, [
+                    "messagingServiceSid" => $messagingServiceSid,
+                    'body' => $messageContent,
+                ]);
+            } catch (\Exception $e) {
+                Log::error("Failed to send SMS to {$farmer->phone}: {$e->getMessage()}");
+            }
+
             $messages[] = $newMessage;
         }
 
@@ -72,9 +86,8 @@ class MessageController extends Controller
             'success' => 'Messages sent to all farmers in the area',
             'messages' => $messages,
         ]);
-
-        abort(404);
     }
+
 
     /**
      * Store a newly created resource in storage.

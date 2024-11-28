@@ -12,6 +12,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SmsTwilioController;
 use App\Http\Controllers\TipController;
 use App\Models\Tip;
 use Illuminate\Foundation\Application;
@@ -99,5 +100,7 @@ Route::prefix('tips')->group(function (){
 });
 
 Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+
+Route::get('sms/send', [SmsTwilioController::class, 'sendSms']);
 
 require __DIR__.'/auth.php';
