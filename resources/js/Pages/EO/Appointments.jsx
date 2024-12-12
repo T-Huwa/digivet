@@ -1,10 +1,10 @@
 import DataTable from "@/Components/DataTable";
 import DashboardLayout from "@/Layouts/dashboard";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import React, { useState } from "react";
-import { Close, Edit, OpenInNew } from "@mui/icons-material";
+import { Close, Edit, OpenInNew, Save } from "@mui/icons-material";
 import axios from "axios";
 import DangerButton from "@/Components/DangerButton";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -21,14 +21,17 @@ export default function Appointments({ appointments, selectedAppointment }) {
     const [feedback, setFeedback] = useState("");
     const [editing, setEditing] = useState(false);
     const [date, setDate] = useState(null);
+    const [time, setTime] = useState(null);
 
-    console.log(usePage().props);
+    //console.log(usePage().props);
 
     useEffect(() => {
         if (selectedAppointment) {
             setModalAppointment(selectedAppointment);
             setDate(selectedAppointment.appointment_date);
-            console.log(date);
+            setTime(selectedAppointment.time);
+            
+            //console.log(date);
             setModalOpen(true);
         }
     }, []);
@@ -38,19 +41,36 @@ export default function Appointments({ appointments, selectedAppointment }) {
         {
             field: "appointment_date",
             headerName: "Appointment Date",
+            minWidth: 150,
             flex: 1,
         },
         {
             field: "farmer",
             headerName: "Farmer",
+            minWidth: 150,
             flex: 1,
         },
-        { field: "status", headerName: "Status", flex: 1 },
+        { field: "status", headerName: "Status", minWidth: 150, flex: 1 },
         {
-            field: "description",
+            field: "service",
             headerName: "Service",
+            minWidth: 150,
             flex: 1,
             sortable: false,
+        },
+        {
+            field: "tag",
+            headerName: "Animal Tag",
+            minWidth: 150,
+            sortable: false,
+            flex: 1,
+        },
+        {
+            field: "time",
+            headerName: "Time",
+            minWidth: 150,
+            sortable: false,
+            flex: 1,
         },
         {
             field: "feedback",
@@ -76,7 +96,9 @@ export default function Appointments({ appointments, selectedAppointment }) {
 
     const openModal = (appointment) => {
         setDate(appointment.appointment_date);
-        console.log(date);
+        setTime(appointment.time);
+
+        //console.log(date);
         setModalAppointment(appointment);
         setModalOpen(true);
     };
@@ -95,7 +117,9 @@ export default function Appointments({ appointments, selectedAppointment }) {
                 response = await axios.post(route("appointments.update.date"), {
                     id: appointmentId,
                     date: date,
+                    time: time,
                 });
+                console.log(time);
             } else {
                 response = await axios.post(
                     route("appointments.update.status"),
@@ -111,7 +135,7 @@ export default function Appointments({ appointments, selectedAppointment }) {
 
             return response.data;
         } catch (error) {
-            alert("Error Accepting appointment");
+            alert("Error Processing appointment");
             console.error("Error updating appointment status:", error);
 
             return null;
@@ -170,6 +194,7 @@ export default function Appointments({ appointments, selectedAppointment }) {
                     {modalAppointment && !completing && (
                         <>
                             <table>
+                                <tbody>
                                 <tr>
                                     <td>
                                         <strong>ID:</strong>
@@ -184,20 +209,38 @@ export default function Appointments({ appointments, selectedAppointment }) {
                                     </td>
                                     <td className="pl-4">
                                         {editing && (
-                                            <TextInput
-                                                value={date}
-                                                type="date"
-                                                onChange={(e) =>
-                                                    setDate(e.target.value)
-                                                }
-                                            />
+                                            <>
+                                                <TextInput
+                                                    value={date}
+                                                    type="date"
+                                                    onChange={(e) =>
+                                                        setDate(e.target.value)
+                                                    }
+                                                />
+                                                <TextInput
+                                                    value={time}
+                                                    type="time"
+                                                    onChange={(e) =>
+                                                        setTime(e.target.value)
+                                                    }
+                                                />
+
+                                                <Button onClick={() =>
+                                                    handleAppointment(
+                                                        modalAppointment.id,
+                                                        "Requested"
+                                                    )
+                                                }>
+                                                    <Save/>
+                                                </Button>
+                                            </>
                                         )}
 
                                         {!editing && (
                                             <>
                                                 {
-                                                    modalAppointment.appointment_date
-                                                }{" "}
+                                                    modalAppointment.appointment_date + " At " + modalAppointment.time
+                                                }
                                                 {modalAppointment.status ===
                                                     "Requested" && (
                                                     <IconButton
@@ -236,7 +279,8 @@ export default function Appointments({ appointments, selectedAppointment }) {
                                         {modalAppointment.description}
                                     </td>
                                 </tr>
-                            </table>
+                            
+                            </tbody></table>
                             {modalAppointment.status !== "Cancelled" &&
                                 modalAppointment.status !== "Completed" && (
                                     <div className="mt-6 flex justify-end">

@@ -30,6 +30,8 @@ class AppointmentController extends Controller
                                             'id', 
                                             'appointment_date', 
                                             'service', 
+                                            'time', 
+                                            'tag', 
                                             'description', 
                                             'extension_worker_id', 
                                             'status', 
@@ -41,9 +43,11 @@ class AppointmentController extends Controller
                                                 'appointment_date' => $appointment->appointment_date,
                                                 'description' => $appointment->description,
                                                 'status' => $appointment->status,
+                                                'tag' => $appointment->tag,
+                                                'time' => $appointment->time,
                                                 'feedback' => $appointment->feedback,
                                                 'service' => $appointment->service,
-                                                'extension_worker' => $appointment->extensionWorker->name ?? null,
+                                                'extension_worker' => $appointment->extensionWorker->name ?? 'N/A',
                                             ];
                                         });
 
@@ -61,7 +65,10 @@ class AppointmentController extends Controller
                                             'appointment_date', 
                                             'service as description', 
                                             'farmer_id',
+                                            'time', 
+                                            'tag', 
                                             'status', 
+                                            'service',
                                             'feedback' 
                                         ])
                                         ->map(function($appointment) {
@@ -70,6 +77,9 @@ class AppointmentController extends Controller
                                                 'appointment_date' => $appointment->appointment_date,
                                                 'description' => $appointment->description,
                                                 'status' => $appointment->status,
+                                                'tag' => $appointment->tag,
+                                                'time' => $appointment->time,
+                                                'service' => $appointment->service,
                                                 'feedback' => $appointment->feedback,
                                                 'farmer' => $appointment->farmer->name ?? null,
                                             ];
@@ -130,6 +140,8 @@ class AppointmentController extends Controller
             'extension_worker_id' => $extensionWorker->id,
             'area_id' => $farmerArea,
             'appointment_date' => $request->appointment_date,
+            'time' => $request->time,
+            'tag' => $request->tag,
             'animal_type' => $request->animal_type,
             'service' => $request->service,
             'description' => $request->description,
@@ -141,7 +153,7 @@ class AppointmentController extends Controller
 
         $this->index($request);
         
-        return Inertia::redirect('Farmer/Appointments', ['appointments'=>Appointment::all(), 'success'=>'Appointment requested']);
+        return Inertia::render('Farmer/Appointments', ['appointments'=>Appointment::all(), 'success'=>'Appointment requested']);
     }
 
 
@@ -207,21 +219,20 @@ class AppointmentController extends Controller
         $request->validate([
             'id' => 'required|integer|exists:appointments,id',
             'date' => 'required',
+            'time' => 'required',
         ]);
 
         // Find the appointment by ID from the request
         $appointment = Appointment::findOrFail($request->id);
 
-        // Update the appointment date
         $appointment->status = "Pending";
         $appointment->appointment_date = $request->date;
+        $appointment->time = $request->time;
         $appointment->save();
 
-        // Find the Extension Worker
         $extensionWorker = User::find($appointment->extension_worker_id);
         $farmer = User::find($appointment->farmer_id);
 
-        // Notify about the date change
         $extensionWorker->notify(new AppointmentNotification($appointment, 'date_changed'));
         $farmer->notify(new AppointmentNotification($appointment, 'date_changed'));
 

@@ -14,6 +14,8 @@ class Appointment extends Model
         'extension_worker_id',
         'appointment_date', 
         'area_id', 
+        'tag',
+        'time',
         'service', 
         'animal_type', 
         'description', 

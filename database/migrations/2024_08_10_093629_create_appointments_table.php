@@ -18,10 +18,12 @@ return new class extends Migration
             $table->foreignId('extension_worker_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('area_id')->constrained('areas')->onDelete('cascade')->nullable();
             $table->dateTime('appointment_date');
+            $table->time('time')->nullable();
             $table->text('description')->nullable();
             $table->text('service')->nullable();
             $table->text('feedback')->nullable();
             $table->text('animal_type')->nullable();
+            $table->text('tag')->nullable();
             $table->enum('status', ['Requested','Pending', 'Completed', 'Cancelled'])->default('Pending');
             $table->timestamps();
         });

@@ -103,4 +103,9 @@ Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
 
 Route::get('sms/send', [SmsTwilioController::class, 'sendSms']);
 
+Route::middleware('auth')->group(function () {
+    Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+});
+
 require __DIR__.'/auth.php';

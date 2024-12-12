@@ -19,6 +19,8 @@ const AppointmentForm = ({ busy }) => {
         animal_type: "",
         description: "",
         service: "",
+        time: "",
+        tag: "",
     });
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -99,6 +101,20 @@ const AppointmentForm = ({ busy }) => {
                     </div>
 
                     <div className="mt-4">
+                        <InputLabel htmlFor="time" value="Time" />
+                        <TextInput
+                            id="time"
+                            type="time"
+                            name="time"
+                            value={data.time}
+                            className="mt-1 block w-full"
+                            onChange={(e) => setData("time", e.target.value)}
+                            required
+                        />
+                        <InputError message={errors.time} className="mt-2" />
+                    </div>
+
+                    <div className="mt-4">
                         <InputLabel
                             htmlFor="description"
                             value="Add Description"
@@ -142,6 +158,18 @@ const AppointmentForm = ({ busy }) => {
                             message={errors.animal_type}
                             className="mt-2"
                         />
+                    </div>
+                    <div className="mt-4">
+                        <InputLabel htmlFor="tag" value="Tag" />
+                        <TextInput
+                            id="tag"
+                            type="text"
+                            name="tag"
+                            value={data.tag}
+                            className="mt-1 block w-full"
+                            onChange={(e) => setData("tag", e.target.value)}
+                        />
+                        <InputError message={errors.tag} className="mt-2" />
                     </div>
 
                     <FormControl className="mt-4" fullWidth>
@@ -201,3 +229,4 @@ const AppointmentForm = ({ busy }) => {
 };
 
 export default AppointmentForm;
+
