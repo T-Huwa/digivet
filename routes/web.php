@@ -8,6 +8,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CaseStudyController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\KholaBuildingController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
@@ -115,6 +116,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/ptests', [PTestController::class, 'index'])->name('ptests.index');
     Route::get('/ptests/create', [PTestController::class, 'create'])->name('ptests.create');
     Route::post('/ptests', [PTestController::class, 'store'])->name('ptests.store');
+
+    Route::post('/khola', [KholaBuildingController::class, 'store'])->name('khola.store');
 });
 
 Route::get('/animal-treatments', [AnimalTreatmentController::class, 'index']);

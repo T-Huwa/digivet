@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, MenuItem, Select, Checkbox, FormControl, InputLabel, Button, FormControlLabel, Grid, Typography } from '@mui/material';
 
-const AnimalTeethClippingCreate = () => {
+const AnimalTeethClippingCreate = ({id, userId}) => {
     const [formData, setFormData] = useState({
-        appointment_id: '',
+        appointment_id: id,
         animal_id: '',
         date_of_teeth_clipping: '',
         animal_age: '',
@@ -14,7 +14,7 @@ const AnimalTeethClippingCreate = () => {
         teeth_condition_notes: '',
         teeth_clipping_method: 'Manual',
         teeth_clipping_procedure: 'Full Clip',
-        veterinarian_id: '',
+        veterinarian_id: userId,
         clipping_tools: 'Scissors',
         other_clipping_tool: '',
         pain_management_applied: false,
@@ -31,7 +31,7 @@ const AnimalTeethClippingCreate = () => {
         anesthetic_type: '',
         duration_of_procedure: '',
         procedure_cost: '',
-        responsible_staff: '',
+        responsible_staff: userId,
     });
 
     const handleChange = (e) => {
@@ -59,16 +59,6 @@ const AnimalTeethClippingCreate = () => {
             <Typography variant="h5" className="mb-4">Animal Teeth Clipping</Typography>
             
             <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Appointment ID"
-                        name="appointment_id"
-                        value={formData.appointment_id}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
                         label="Animal ID"

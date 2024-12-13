@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalDipping;
+use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -54,8 +55,11 @@ class AnimalDippingController extends Controller
         ]);
 
         $dipping = AnimalDipping::create($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-dippings.show', $dipping)
+        return redirect()->back()
             ->with('success', 'Treatment record created successfully');
     }
 

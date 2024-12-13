@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalCastration;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -46,8 +47,11 @@ class AnimalCastrationController extends Controller
         ]);
 
         $animalCastration = AnimalCastration::create($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-castrations.show', $animalCastration)
+        return redirect()->back()
             ->with('success', 'Animal castration record created successfully');
     }
 

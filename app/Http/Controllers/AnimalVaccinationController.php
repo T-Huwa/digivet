@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalVaccination;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -92,8 +93,11 @@ class AnimalVaccinationController extends Controller
         ]);
 
         $animalVaccination->update($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-vaccinations.show', $animalVaccination)
+        return redirect()->back()
             ->with('success', 'Animal vaccination record updated successfully');
     }
 

@@ -11,6 +11,7 @@ class PTest extends Model
 
     protected $fillable = [
         'animal_id',
+        'appointment_id',
         'date_of_diagnosis',
         'weight',
         'body_condition_score',

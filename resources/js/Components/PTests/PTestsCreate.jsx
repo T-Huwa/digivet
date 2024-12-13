@@ -50,11 +50,26 @@ export default function PTestsCreate() {
     }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    console.log(values);
-    router.post(route('ptests.store'), values);
+
+function handleSubmit(e) {
+  e.preventDefault();
+  
+  const formData = new FormData();
+  for (const key in values) {
+    formData.append(key, values[key]);
   }
+
+  axios.post(route('ptests.store'), formData)
+    .then(response => {
+      console.log('Data submitted successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error submitting form:', error);
+      if (error.response && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+      }
+    });
+}
 
   return (
       <div className="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">

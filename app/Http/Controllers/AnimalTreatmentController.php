@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalTreatment;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -44,8 +45,11 @@ class AnimalTreatmentController extends Controller
         ]);
 
         AnimalTreatment::create($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-treatments.index')->with('message', 'Animal treatment record created successfully');
+        return redirect()->back()->with('message', 'Animal treatment record created successfully');
     }
 
     public function show(AnimalTreatment $animalTreatment)

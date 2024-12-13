@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalEarTagging;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -49,8 +50,11 @@ class AnimalEarTaggingController extends Controller
         ]);
 
         $animalEarTagging = AnimalEarTagging::create($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-ear-taggings.show', $animalEarTagging)
+        return redirect()->back()
             ->with('success', 'Animal ear tagging record created successfully');
     }
 

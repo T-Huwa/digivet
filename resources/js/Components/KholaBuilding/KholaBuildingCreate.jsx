@@ -4,12 +4,12 @@ import { Alert } from '@mui/material';
 import { router } from '@inertiajs/react';
 import { Input, Select, MenuItem, FormControl, InputLabel, Checkbox, FormControlLabel } from '@mui/material';
 
-export default function KholaBuildingCreate() {
+export default function KholaBuildingCreate({id, userId}) {
   const [formData, setFormData] = useState({
-    appointment_id: '',
+    appointment_id: id,
     animal_id: '',
     construction_start_date: '',
-    construction_officer_id: '',
+    construction_officer_id: userId,
     khola_type: '',
     material_used: '',
     other_material: '',
@@ -59,7 +59,7 @@ export default function KholaBuildingCreate() {
     setSubmitError('');
 
     try {
-      const response = await axios.post('/api/khola-buildings', formData);
+      const response = await axios.post(route('khola.store'), formData);
       router.push(`/khola-buildings/${response.data.id}`);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {

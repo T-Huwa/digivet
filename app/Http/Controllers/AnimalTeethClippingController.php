@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalTeethClipping;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -49,8 +50,11 @@ class AnimalTeethClippingController extends Controller
         ]);
 
         $animalTeethClipping = AnimalTeethClipping::create($validated);
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
-        return redirect()->route('animal-teeth-clippings.show', $animalTeethClipping)
+        return redirect()->back()
             ->with('success', 'Animal teeth clipping record created successfully');
     }
 
