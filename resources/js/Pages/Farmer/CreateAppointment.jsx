@@ -140,19 +140,27 @@ const AppointmentForm = ({ busy }) => {
                     <div className="mt-4">
                         <InputLabel
                             htmlFor="animal_type"
-                            value="Animal Type (add tag if necessary)"
+                            value="Animal Type"
                         />
 
-                        <TextInput
+                        <select
                             id="animal_type"
-                            type="textarea"
                             name="animal_type"
                             value={data.animal_type}
-                            className="mt-1 block w-full rounded-md"
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             onChange={(e) =>
-                                setData("animal_type", e.target.value)
+                                setData({...data, animal_type: e.target.value})
                             }
-                        />
+                        >
+                            <option value="">Select an animal type</option>
+                            <option value="Cattle">Cattle</option>
+                            <option value="Sheep">Sheep</option>
+                            <option value="Goats">Goats</option>
+                            <option value="Pigs">Pigs</option>
+                            <option value="Horses">Horses</option>
+                            <option value="Donkeys">Donkeys</option>
+                            <option value="Rabbits">Rabbits</option>
+                        </select>
 
                         <InputError
                             message={errors.animal_type}

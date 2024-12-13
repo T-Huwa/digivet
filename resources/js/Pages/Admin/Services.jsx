@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { InertiaLink, usePage } from '@inertiajs/inertia-react';
+import { usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Layouts/Layout';
+import DashboardLayout from '@/Layouts/dashboard';
 
 export default function Services({ services }) {
     const { flash } = usePage().props;
@@ -15,7 +16,7 @@ export default function Services({ services }) {
     };
 
     return (
-        <Layout>
+        <DashboardLayout>
             <div className="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
                 <h1 className="text-2xl font-semibold text-gray-900">Services</h1>
 
@@ -79,7 +80,7 @@ export default function Services({ services }) {
                     </form>
                 </div>
             </div>
-        </Layout>
+        </DashboardLayout>
     );
 }
 

@@ -13,6 +13,14 @@ import { Head, usePage } from "@inertiajs/react";
 import InputLabel from "@/Components/InputLabel";
 import { Textarea } from "@headlessui/react";
 import TextInput from "@/Components/TextInput";
+import AnimalTeethClippingCreate from "@/Components/AnimalTeethClipping/AnimalTeethClippingCreate";
+import AnimalEarTaggingCreate from "@/Components/AnimalEarTagging/AnimalEarTagging";
+import AnimalVaccinationCreate from "@/Components/AnimalVaccination/AnimalVaccinationCreate";
+import PTestsCreate from "@/Components/PTests/PTestsCreate";
+import AnimalTreatmentCreate from "@/Components/AnimalTreatments/Create";
+import AnimalDippingCreate from "@/Components/AnimalDipping/AnimalDippingCreate";
+import AnimalCastrationCreate from "@/Components/AnimalCastration/AnimalCastrationCreate";
+import KholaBuildingCreate from "@/Components/KholaBuilding/KholaBuildingCreate";
 
 export default function Appointments({ appointments, selectedAppointment }) {
     const [modalOpen, setModalOpen] = useState(false);
@@ -23,7 +31,7 @@ export default function Appointments({ appointments, selectedAppointment }) {
     const [date, setDate] = useState(null);
     const [time, setTime] = useState(null);
 
-    //console.log(usePage().props);
+    const userId = usePage().props.auth.user.id;
 
     useEffect(() => {
         if (selectedAppointment) {
@@ -106,6 +114,7 @@ export default function Appointments({ appointments, selectedAppointment }) {
     const closeModal = () => {
         setEditing(false);
         setModalOpen(false);
+        setCompleting(false);
         setModalAppointment(null);
     };
 
@@ -178,7 +187,11 @@ export default function Appointments({ appointments, selectedAppointment }) {
             </div>
 
             <Modal show={modalOpen} onClose={closeModal}>
-                <Box className="p-6">
+                <Box className="p-6 mt-6"
+                    sx={{
+                        mt: '8',
+                        maxHeight: '80vh', // Adjust this value as needed
+                    }}>
                     <Box className="flex">
                         <div className="flex-1">
                             <h2 className="text-lg font-medium text-gray-900">
@@ -189,9 +202,13 @@ export default function Appointments({ appointments, selectedAppointment }) {
                             <Close />
                         </DangerButton>
                     </Box>
-                    {modalAppointment !== "Completed"}
-
-                    {modalAppointment && !completing && (
+                    <Box
+                        sx={{
+                            mt: '8',
+                            maxHeight: '70vh', // Adjust this value as needed
+                            overflowY: 'scroll',
+                        }}>                    
+                        {modalAppointment && !completing && (
                         <>
                             <table>
                                 <tbody>
@@ -327,13 +344,10 @@ export default function Appointments({ appointments, selectedAppointment }) {
                         </>
                     )}
 
-                    {completing && (
+                    {modalAppointment && completing && (
                         <>
-                            <div className="my-4">
-                                <InputLabel
-                                    htmlFor="feedback"
-                                    value="Enter Feedback"
-                                />
+                            {/* <div className="my-4">
+                                <InputLabel htmlFor="feedback" value="Enter Feedback" />
 
                                 <Textarea
                                     id="feedback"
@@ -341,21 +355,28 @@ export default function Appointments({ appointments, selectedAppointment }) {
                                     name="feedback"
                                     value={feedback}
                                     className="mt-1 block w-full rounded-md"
-                                    onChange={(e) =>
-                                        setFeedback(e.target.value)
-                                    }
+                                    onChange={(e) => setFeedback(e.target.value)}
                                 />
-                            </div>
-                            <PrimaryButton
+                            </div> */}
+
+                            {modalAppointment.service === "Teeth Clipping" && <AnimalTeethClippingCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Ear Tagging" && <AnimalEarTaggingCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Vaccination" && <AnimalVaccinationCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Pregnant Diagnosis" && <PTestsCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Treatment" && <AnimalTreatmentCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Dipping And Spraying" && <AnimalDippingCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Castration" && <AnimalCastrationCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Khola Building" && <KholaBuildingCreate id={modalAppointment.id} userId={userId}/>}
+
+                            {/* <PrimaryButton
                                 className="mx-1"
-                                onClick={() =>
-                                    completeAppointment(modalAppointment.id)
-                                }
+                                onClick={() => completeAppointment(modalAppointment.id)}
                             >
                                 Complete
-                            </PrimaryButton>
+                            </PrimaryButton> */}
                         </>
-                    )}
+                        )}
+                    </Box>              
                 </Box>
             </Modal>
         </DashboardLayout>

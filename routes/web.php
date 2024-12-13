@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AiAPIController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AnimalTreatmentController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -11,7 +12,9 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PTestController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SmsTwilioController;
 use App\Http\Controllers\TipController;
 use App\Models\Tip;
@@ -107,5 +110,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/ptests', [PTestController::class, 'index'])->name('ptests.index');
+    Route::get('/ptests/create', [PTestController::class, 'create'])->name('ptests.create');
+    Route::post('/ptests', [PTestController::class, 'store'])->name('ptests.store');
+});
+
+Route::get('/animal-treatments', [AnimalTreatmentController::class, 'index']);
 
 require __DIR__.'/auth.php';
