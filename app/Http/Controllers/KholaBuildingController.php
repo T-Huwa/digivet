@@ -29,30 +29,26 @@ public function store(Request $request)
         'animal_id' => 'required|string',
         'construction_start_date' => 'required|date',
         'construction_officer_id' => 'required|exists:users,id',
-        'khola_type' => 'required',
-        'material_used' => 'required',
-        'other_material' => 'nullable|required_if:material_used,Others|string',
+        'khola_type' => ['required'],
+        'material_used' => ['required'],
         'khola_size' => 'required|string',
         'number_of_compartments' => 'required|integer|min:1',
-        'ventilation_type' => 'required',
-        'flooring_type' => 'required',
-        'other_flooring' => 'nullable|required_if:flooring_type,Other|string',
-        'roof_type' => 'required',
-        'other_roof' => 'nullable|required_if:roof_type,Others|string',
+        'ventilation_type' => ['required'],
+        'flooring_type' => ['required'],
+        'roof_type' => ['required'],
         'drainage_system_installed' => 'required|boolean',
         'animal_health_safety_features' => 'required|boolean',
         'estimated_cost' => 'required|numeric|min:0',
-        'construction_method' => 'required',
+        'construction_method' => ['required'],
         'completion_date' => 'nullable|date|after_or_equal:construction_start_date',
-        'completion_status' => 'required',
+        'completion_status' => ['required'],
         'animal_accommodation_capacity' => 'required|integer|min:1',
-        'post_construction_inspection' => 'required',
+        'post_construction_inspection' => ['required'],
         'follow_up_action_required' => 'required|boolean',
-        'follow_up_action_details' => 'nullable|required_if:follow_up_action_required,true|string',
+        'follow_up_action_details' => 'nullable|string',
         'additional_notes' => 'nullable|string',
     ]);
 
-    // Create the KholaBuilding record
     $kholaBuilding = KholaBuilding::create([
         'appointment_id' => $validated['appointment_id'],
         'animal_id' => $validated['animal_id'],
@@ -80,15 +76,13 @@ public function store(Request $request)
         'follow_up_action_details' => $validated['follow_up_action_details'] ?? null,
         'additional_notes' => $validated['additional_notes'] ?? null,
     ]);
-
-    // Update the appointment status
-    $appointment = Appointment::find($request->appointment_id);
-    $appointment->status = "Completed";
-    $appointment->save();
+        //$kholaBuilding = KholaBuilding::create($request->all());
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->status = "Completed";
+        $appointment->save();
 
     return response()->json(['message' => 'KholaBuilding created successfully', 'data' => $kholaBuilding], 201);
 }
-
 
     public function show(KholaBuilding $kholaBuilding)
     {

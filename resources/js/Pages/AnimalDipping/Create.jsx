@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
+import { usePage, router } from '@inertiajs/react';
 
 export default function Create() {
   const { errors } = usePage().props;
@@ -39,7 +38,7 @@ export default function Create() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    Inertia.post('/animal-dippings', values);
+    router.post('/animal-dippings', values);
   }
 
   return (

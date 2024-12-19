@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
-import Layout from '@/Layouts/Layout';
 import DashboardLayout from '@/Layouts/dashboard';
+import { usePage, router } from '@inertiajs/react';
 
 export default function Services({ services }) {
     const { flash } = usePage().props;
@@ -12,7 +10,7 @@ export default function Services({ services }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Inertia.post(route('services.store'), { name, description, price });
+        router.post(route('services.store'), { name, description, price });
     };
 
     return (

@@ -60,7 +60,8 @@ export default function KholaBuildingCreate({id, userId}) {
 
     try {
       const response = await axios.post(route('khola.store'), formData);
-      router.push(`/khola-buildings/${response.data.id}`);
+      console.log(response);
+      //router.push(`/khola-buildings/${response.data.id}`);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
