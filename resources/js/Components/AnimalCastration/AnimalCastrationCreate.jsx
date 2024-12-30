@@ -1,244 +1,333 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { Button, TextField, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, Typography, Alert, AlertTitle, Box as AlertDescription } from '@mui/material';
 import { router } from '@inertiajs/react';
 
-export default function AnimalCastrationCreate() {
-  const [formData, setFormData] = useState({
-    appointment_id: '',
-    animal_id: '',
-    castration_date: '',
-    veterinarian_id: '',
+const AnimalCastrationCreate = ({id, userId, closeModal}) => {
+  const [values, setValues] = useState({
+    appointment_id: id,
+    animal_id: '9',
+    date_of_castration: '',
+    animal_age: '',
+    age_unit: 'Months',
     castration_method: '',
-    anesthesia_used: '',
-    anesthesia_type: '',
-    pain_management: '',
-    complications: false,
+    method_details: '',
+    anesthesia_used: 'None',
+    anesthesia_details: '',
+    duration_of_procedure: '',
+    castration_officer_id: userId,
+    equipment_used: '',
+    complications_observed: false,
     complication_details: '',
-    post_operative_care: '',
-    recovery_period: '',
-    follow_up_date: '',
+    follow_up_treatment_required: false,
+    follow_up_treatment_details: '',
+    post_procedure_monitoring: false,
+    post_procedure_health_status: 'Healthy',
+    health_status_details: '',
     additional_notes: '',
   });
 
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value
+    const key = e.target.id;
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setValues(values => ({
+      ...values,
+      [key]: value,
     }));
   };
 
-  const handleSelectChange = (name, value) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setErrors({});
-    setSubmitError('');
-
-    try {
-      const response = await axios.post('/api/animal-castrations', formData);
-      router.push(`/animal-castrations/${response.data.id}`);
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        setSubmitError('An unexpected error occurred. Please try again.');
-      }
-      setIsSubmitting(false);
-    }
+    router.post(route('animal-castrations.store'), values, {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        alert('Animal castration record created successfully');
+        closeModal();
+      },
+      onError: (errors) => {
+        setErrors(errors);
+      },
+    });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white shadow rounded-lg">
-      <Typography variant="h5" className="font-bold mb-4">Create Animal Castration Record</Typography>
-      {submitError && (
-        <Alert severity="error" className="mb-4">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{submitError}</AlertDescription>
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <TextField
-          label="Appointment ID"
-          name="appointment_id"
-          value={formData.appointment_id}
-          onChange={handleChange}
-          fullWidth
-          error={Boolean(errors.appointment_id)}
-          helperText={errors.appointment_id && errors.appointment_id[0]}
-        />
+    <div className="max-w-4xl mx-auto py-10 sm:px-6 lg:px-8">
+      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold mb-6">Create Animal Castration Record</h2>
 
-        <TextField
-          label="Animal ID"
-          name="animal_id"
-          value={formData.animal_id}
-          onChange={handleChange}
-          fullWidth
-          error={Boolean(errors.animal_id)}
-          helperText={errors.animal_id && errors.animal_id[0]}
-        />
-
-        <TextField
-          label="Castration Date"
-          name="castration_date"
-          type="date"
-          value={formData.castration_date}
-          onChange={handleChange}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          error={Boolean(errors.castration_date)}
-          helperText={errors.castration_date && errors.castration_date[0]}
-        />
-
-        <TextField
-          label="Veterinarian ID"
-          name="veterinarian_id"
-          value={formData.veterinarian_id}
-          onChange={handleChange}
-          fullWidth
-          error={Boolean(errors.veterinarian_id)}
-          helperText={errors.veterinarian_id && errors.veterinarian_id[0]}
-        />
-
-        <FormControl fullWidth error={Boolean(errors.castration_method)} variant="outlined">
-          <InputLabel>Castration Method</InputLabel>
-          <Select
-            name="castration_method"
-            value={formData.castration_method}
-            onChange={(e) => handleSelectChange('castration_method', e.target.value)}
-            label="Castration Method"
-          >
-            <MenuItem value="Surgical">Surgical</MenuItem>
-            <MenuItem value="Chemical">Chemical</MenuItem>
-            <MenuItem value="Banding">Banding</MenuItem>
-          </Select>
-          {errors.castration_method && <p className="text-red-500 text-sm mt-1">{errors.castration_method[0]}</p>}
-        </FormControl>
-
-        <FormControl fullWidth error={Boolean(errors.anesthesia_used)} variant="outlined">
-          <InputLabel>Anesthesia Used</InputLabel>
-          <Select
-            name="anesthesia_used"
-            value={formData.anesthesia_used}
-            onChange={(e) => handleSelectChange('anesthesia_used', e.target.value)}
-            label="Anesthesia Used"
-          >
-            <MenuItem value="Yes">Yes</MenuItem>
-            <MenuItem value="No">No</MenuItem>
-          </Select>
-          {errors.anesthesia_used && <p className="text-red-500 text-sm mt-1">{errors.anesthesia_used[0]}</p>}
-        </FormControl>
-
-        {formData.anesthesia_used === 'Yes' && (
-          <TextField
-            label="Anesthesia Type"
-            name="anesthesia_type"
-            value={formData.anesthesia_type}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date_of_castration">
+            Date of Castration
+          </label>
+          <input
+            type="date"
+            id="date_of_castration"
+            value={values.date_of_castration}
             onChange={handleChange}
-            fullWidth
-            error={Boolean(errors.anesthesia_type)}
-            helperText={errors.anesthesia_type && errors.anesthesia_type[0]}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-        )}
+          {errors.date_of_castration && <p className="text-red-500 text-xs italic">{errors.date_of_castration}</p>}
+        </div>
 
-        <TextField
-          label="Pain Management"
-          name="pain_management"
-          value={formData.pain_management}
-          onChange={handleChange}
-          fullWidth
-          error={Boolean(errors.pain_management)}
-          helperText={errors.pain_management && errors.pain_management[0]}
-        />
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="animal_age">
+            Animal Age
+          </label>
+          <input
+            type="number"
+            id="animal_age"
+            value={values.animal_age}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {errors.animal_age && <p className="text-red-500 text-xs italic">{errors.animal_age}</p>}
+        </div>
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="complications"
-              checked={formData.complications}
-              onChange={(e) => handleSelectChange('complications', e.target.checked)}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="age_unit">
+            Age Unit
+          </label>
+          <select
+            id="age_unit"
+            value={values.age_unit}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="Months">Months</option>
+            <option value="Years">Years</option>
+          </select>
+          {errors.age_unit && <p className="text-red-500 text-xs italic">{errors.age_unit}</p>}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="castration_method">
+            Castration Method
+          </label>
+          <select
+            id="castration_method"
+            value={values.castration_method}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Select method</option>
+            <option value="Surgical">Surgical</option>
+            <option value="Banding">Banding</option>
+            <option value="Burdizzo">Burdizzo</option>
+            <option value="Chemical">Chemical</option>
+          </select>
+          {errors.castration_method && <p className="text-red-500 text-xs italic">{errors.castration_method}</p>}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="method_details">
+            Method Details
+          </label>
+          <textarea
+            id="method_details"
+            value={values.method_details}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            rows="3"
+          />
+          {errors.method_details && <p className="text-red-500 text-xs italic">{errors.method_details}</p>}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="anesthesia_used">
+            Anesthesia Used
+          </label>
+          <select
+            id="anesthesia_used"
+            value={values.anesthesia_used}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="None">None</option>
+            <option value="Local Anesthesia">Local Anesthesia</option>
+            <option value="General Anesthesia">General Anesthesia</option>
+          </select>
+          {errors.anesthesia_used && <p className="text-red-500 text-xs italic">{errors.anesthesia_used}</p>}
+        </div>
+
+        {values.anesthesia_used !== 'None' && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="anesthesia_details">
+              Anesthesia Details
+            </label>
+            <input
+              type="text"
+              id="anesthesia_details"
+              value={values.anesthesia_details}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
-          }
-          label="Complications"
-        />
-        {errors.complications && <p className="text-red-500 text-sm mt-1">{errors.complications[0]}</p>}
-
-        {formData.complications && (
-          <TextField
-            label="Complication Details"
-            name="complication_details"
-            value={formData.complication_details}
-            onChange={handleChange}
-            fullWidth
-            multiline
-            rows={4}
-            error={Boolean(errors.complication_details)}
-            helperText={errors.complication_details && errors.complication_details[0]}
-          />
+            {errors.anesthesia_details && <p className="text-red-500 text-xs italic">{errors.anesthesia_details}</p>}
+          </div>
         )}
 
-        <TextField
-          label="Post-operative Care"
-          name="post_operative_care"
-          value={formData.post_operative_care}
-          onChange={handleChange}
-          fullWidth
-          multiline
-          rows={4}
-          error={Boolean(errors.post_operative_care)}
-          helperText={errors.post_operative_care && errors.post_operative_care[0]}
-        />
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="duration_of_procedure">
+            Duration of Procedure (minutes)
+          </label>
+          <input
+            type="number"
+            id="duration_of_procedure"
+            value={values.duration_of_procedure}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {errors.duration_of_procedure && <p className="text-red-500 text-xs italic">{errors.duration_of_procedure}</p>}
+        </div>
 
-        <TextField
-          label="Recovery Period (in days)"
-          name="recovery_period"
-          type="number"
-          value={formData.recovery_period}
-          onChange={handleChange}
-          fullWidth
-          error={Boolean(errors.recovery_period)}
-          helperText={errors.recovery_period && errors.recovery_period[0]}
-        />
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="equipment_used">
+            Equipment Used
+          </label>
+          <input
+            type="text"
+            id="equipment_used"
+            value={values.equipment_used}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {errors.equipment_used && <p className="text-red-500 text-xs italic">{errors.equipment_used}</p>}
+        </div>
 
-        <TextField
-          label="Follow-up Date"
-          name="follow_up_date"
-          type="date"
-          value={formData.follow_up_date}
-          onChange={handleChange}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          error={Boolean(errors.follow_up_date)}
-          helperText={errors.follow_up_date && errors.follow_up_date[0]}
-        />
+        <div className="mb-4">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              id="complications_observed"
+              checked={values.complications_observed}
+              onChange={handleChange}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span className="ml-2 text-gray-700">Complications Observed</span>
+          </label>
+          {errors.complications_observed && <p className="text-red-500 text-xs italic">{errors.complications_observed}</p>}
+        </div>
 
-        <TextField
-          label="Additional Notes"
-          name="additional_notes"
-          value={formData.additional_notes}
-          onChange={handleChange}
-          fullWidth
-          multiline
-          rows={4}
-          error={Boolean(errors.additional_notes)}
-          helperText={errors.additional_notes && errors.additional_notes[0]}
-        />
+        {values.complications_observed && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="complication_details">
+              Complication Details
+            </label>
+            <textarea
+              id="complication_details"
+              value={values.complication_details}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              rows="3"
+            />
+            {errors.complication_details && <p className="text-red-500 text-xs italic">{errors.complication_details}</p>}
+          </div>
+        )}
 
-        <Button type="submit" fullWidth variant="contained" color="primary" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Create Animal Castration Record'}
-        </Button>
+        <div className="mb-4">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              id="follow_up_treatment_required"
+              checked={values.follow_up_treatment_required}
+              onChange={handleChange}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span className="ml-2 text-gray-700">Follow-up Treatment Required</span>
+          </label>
+          {errors.follow_up_treatment_required && <p className="text-red-500 text-xs italic">{errors.follow_up_treatment_required}</p>}
+        </div>
+
+        {values.follow_up_treatment_required && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="follow_up_treatment_details">
+              Follow-up Treatment Details
+            </label>
+            <textarea
+              id="follow_up_treatment_details"
+              value={values.follow_up_treatment_details}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              rows="3"
+            />
+            {errors.follow_up_treatment_details && <p className="text-red-500 text-xs italic">{errors.follow_up_treatment_details}</p>}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              id="post_procedure_monitoring"
+              checked={values.post_procedure_monitoring}
+              onChange={handleChange}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span className="ml-2 text-gray-700">Post-Procedure Monitoring</span>
+          </label>
+          {errors.post_procedure_monitoring && <p className="text-red-500 text-xs italic">{errors.post_procedure_monitoring}</p>}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="post_procedure_health_status">
+            Post-Procedure Health Status
+          </label>
+          <select
+            id="post_procedure_health_status"
+            value={values.post_procedure_health_status}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="Healthy">Healthy</option>
+            <option value="Mild Complication">Mild Complication</option>
+            <option value="Severe Complication">Severe Complication</option>
+            <option value="Other">Other</option>
+          </select>
+          {errors.post_procedure_health_status && <p className="text-red-500 text-xs italic">{errors.post_procedure_health_status}</p>}
+        </div>
+
+        {values.post_procedure_health_status === 'Other' && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="health_status_details">
+              Health Status Details
+            </label>
+            <textarea
+              id="health_status_details"
+              value={values.health_status_details}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              rows="3"
+            />
+            {errors.health_status_details && <p className="text-red-500 text-xs italic">{errors.health_status_details}</p>}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="additional_notes">
+            Additional Notes
+          </label>
+          <textarea
+            id="additional_notes"
+            value={values.additional_notes}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            rows="4"
+          />
+          {errors.additional_notes && <p className="text-red-500 text-xs italic">{errors.additional_notes}</p>}
+        </div>
+
+        <div className="flex items-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Create Castration Record
+          </button>
+        </div>
       </form>
     </div>
   );
-}
+};
+
+export default AnimalCastrationCreate;
+

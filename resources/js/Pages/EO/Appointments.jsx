@@ -359,14 +359,14 @@ export default function Appointments({ appointments, selectedAppointment }) {
                                 />
                             </div> */}
 
-                            {modalAppointment.service === "Teeth Clipping" && <AnimalTeethClippingCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Ear Tagging" && <AnimalEarTaggingCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Vaccination" && <AnimalVaccinationCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Pregnant Diagnosis" && <PTestsCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Treatment" && <AnimalTreatmentCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Dipping And Spraying" && <AnimalDippingCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Castration" && <AnimalCastrationCreate id={modalAppointment.id} userId={userId}/>}
-                            {modalAppointment.service === "Khola Building" && <KholaBuildingCreate id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Teeth Clipping" && <AnimalTeethClippingCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Ear Tagging" && <AnimalEarTaggingCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Vaccination" && <AnimalVaccinationCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Pregnant Diagnosis" && <PTestsCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Treatment" && <AnimalTreatmentCreate closeModal={closeModal} id={modalAppointment.id} userId={userId} />} {/* */}
+                            {modalAppointment.service === "Dipping And Spraying" && <AnimalDippingCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>} {/* */}
+                            {modalAppointment.service === "Castration" && <AnimalCastrationCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>}
+                            {modalAppointment.service === "Khola Building" && <KholaBuildingCreate closeModal={closeModal} id={modalAppointment.id} userId={userId}/>} {/* */}
 
                             {/* <PrimaryButton
                                 className="mx-1"

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { router, usePage } from '@inertiajs/react';
 import { Checkbox, FormControlLabel } from '@mui/material';
 
-const AnimalVaccinationCreate = () => {
+const AnimalVaccinationCreate = ({id, userId, closeModal}) => {
+  const { errors } = usePage().props;
   const [formData, setFormData] = useState({
-    appointment_id: '',
-    animal_id: '',
+    appointment_id: id,
+    animal_id: '9',
     date_of_vaccination: '',
     animal_age: '',
     age_unit: '',
@@ -17,7 +18,7 @@ const AnimalVaccinationCreate = () => {
     other_administration_route: '',
     vaccine_batch_number: '',
     lot_number: '',
-    vaccination_officer_id: '',
+    vaccination_officer_id: userId,
     adverse_reactions_observed: false,
     reaction_description: '',
     follow_up_required: false,
@@ -28,8 +29,6 @@ const AnimalVaccinationCreate = () => {
     additional_notes: '',
   });
 
-  const [errors, setErrors] = useState({});
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -38,55 +37,20 @@ const AnimalVaccinationCreate = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('/animal-vaccinations', formData);
-      alert('Animal vaccination record created successfully!');
-      // Optionally redirect or reset form
-    } catch (error) {
-      if (error.response && error.response.data.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        alert('An error occurred while submitting the form.');
-      }
-    }
+    router.post(route('animal-vaccinations.store'), formData, {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        alert('Animal vaccination record created successfully!');
+        closeModal();
+      },
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
-      <div>
-        <label htmlFor="appointment_id" className="block text-sm font-medium text-gray-700">
-          Appointment ID
-        </label>
-        <input
-          type="text"
-          name="appointment_id"
-          id="appointment_id"
-          value={formData.appointment_id}
-          onChange={handleChange}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.appointment_id ? 'border-red-500' : ''}`}
-          required
-        />
-        {errors.appointment_id && <p className="mt-1 text-sm text-red-500">{errors.appointment_id[0]}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="animal_id" className="block text-sm font-medium text-gray-700">
-          Animal ID
-        </label>
-        <input
-          type="text"
-          name="animal_id"
-          id="animal_id"
-          value={formData.animal_id}
-          onChange={handleChange}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.animal_id ? 'border-red-500' : ''}`}
-          required
-        />
-        {errors.animal_id && <p className="mt-1 text-sm text-red-500">{errors.animal_id[0]}</p>}
-      </div>
-
       <div>
         <label htmlFor="date_of_vaccination" className="block text-sm font-medium text-gray-700">
           Date of Vaccination
@@ -279,19 +243,6 @@ const AnimalVaccinationCreate = () => {
     required
   />
   {errors.lot_number && <p className="text-red-500 text-xs">{errors.lot_number[0]}</p>}
-</div>
-
-<div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700">Vaccination Officer ID</label>
-  <input
-    type="text"
-    name="vaccination_officer_id"
-    value={formData.vaccination_officer_id}
-    onChange={handleChange}
-    className={`mt-1 block w-full p-2 border ${errors.vaccination_officer_id ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-    required
-  />
-  {errors.vaccination_officer_id && <p className="text-red-500 text-xs">{errors.vaccination_officer_id[0]}</p>}
 </div>
 
 <div className="mb-4">

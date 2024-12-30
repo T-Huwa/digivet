@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Area;
 use App\Models\District;
 use App\Models\Inventory;
@@ -85,10 +86,8 @@ class ReportsController extends Controller
                             'purpose' => $appointment->description,
                         ];
                     })
-                    ->toArray();              
+                    ->toArray();
                 
-                    // Animal Distribution
-
                 $animalDistribution = $this->getAnimalDetails();
                 
                 $animalDistribution = Inventory::whereHas('user', function ($query) use ($areaId) {
@@ -119,7 +118,7 @@ class ReportsController extends Controller
 
                 $jsonReportData = json_encode($reportData);
 
-                $aiReport = $this->generateReport($jsonReportData)['candidates'][0]['content']['parts'][0]['text'];
+                //$aiReport = $this->generateReport($jsonReportData)['candidates'][0]['content']['parts'][0]['text'];
 
                 $reportData = [
                     'officerInfo' => $officerInfo,
@@ -127,7 +126,7 @@ class ReportsController extends Controller
                     'recentAppointments' => $recentAppointments,
                     'upcomingAppointments' => $upcomingAppointments,
                     'animalDistribution' => $animalDistribution,
-                    'aiReport' => $aiReport,
+                    'service_counts' => $this->getServiceCounts($areaId),
                 ];
                 return Inertia::render('EO/EOReports', ['reportsData' => $reportData]);
 
@@ -178,16 +177,120 @@ class ReportsController extends Controller
         }
     }
 
+    // public function index()
+    // {
+    //     $userId = Auth::id();
+    //     $user = User::findOrFail($userId);
+    //     $userRole = $user->role;
+    //     $areaId = $user->area_id;
+
+    //     switch ($userRole) {
+    //         case 'Admin':
+    //             $report = $this->getOverallStats();
+    //             $serviceCounts = $this->getServiceCounts();
+    //             return Inertia::render('Admin/Reports', [
+    //                 'report' => $report,
+    //                 'serviceCounts' => $serviceCounts,
+    //             ]);
+
+    //         case 'Extension Worker':
+    //             $officerInfo = [
+    //                 'name' => $user->name,
+    //                 'area' => $user->area->name ?? 'Unknown', 
+    //                 'district' => $user->area->district->district_name ?? 'Unknown',
+    //                 'registrationDate' => $user->created_at->format('Y-m-d'),
+    //                 'totalFarmers' => $user->area->farmers()->count() ?? 0,
+    //                 'totalAnimals' => $user->area->farmers()->withSum('inventory', 'animal_count')->get()->sum('inventory_sum_animal_count') ?? 0,
+    //             ];
+
+    //             $recentAppointments = $user->appointments()
+    //                 ->where('appointment_date', '<=', now())
+    //                 ->orWhere('status', 'Completed')
+    //                 ->orderBy('appointment_date', 'desc')
+    //                 ->take(3)
+    //                 ->get()
+    //                 ->map(function ($appointment) {
+    //                     return [
+    //                         'date' => $appointment->appointment_date,
+    //                         'farmer' => $appointment->farmer->name ?? 'N/A',
+    //                         'animalType' => $appointment->animal_type,
+    //                         'issue' => $appointment->description,
+    //                         'status' => ucfirst($appointment->status),
+    //                     ];
+    //                 })
+    //                 ->toArray();
+
+    //             $serviceCounts = $this->getServiceCounts($areaId);
+
+    //             return Inertia::render('EO/EOReports', [
+    //                 'officerInfo' => $officerInfo,
+    //                 'recentAppointments' => $recentAppointments,
+    //                 'serviceCounts' => $serviceCounts,
+    //             ]);
+
+    //         case 'Farmer':
+    //             $farmerInfo = [
+    //                 'name' => $user->name,
+    //                 'area' => $user->area->name ?? 'Unknown', 
+    //                 'district' => $user->area->district->district_name ?? 'Unknown',
+    //                 'registrationDate' => $user->created_at->format('Y-m-d'),
+    //             ];
+
+    //             $recentAppointments = $user->farmerAppointments()
+    //                 ->where('appointment_date', '<=', now())
+    //                 ->orWhere('status', 'Completed')
+    //                 ->orderBy('appointment_date', 'desc')
+    //                 ->take(3)
+    //                 ->get(['appointment_date', 'service as issue', 'feedback as notes'])
+    //                 ->toArray();
+
+    //             $serviceCounts = $this->getServiceCounts($user->id, 'farmer');
+
+    //             return Inertia::render('Farmer/FarmerReports', [
+    //                 'farmerInfo' => $farmerInfo,
+    //                 'recentAppointments' => $recentAppointments,
+    //                 'serviceCounts' => $serviceCounts,
+    //             ]);
+
+    //         default:
+    //             abort(403);
+    //     }
+    // }
+
+    private function getServiceCounts($areaId = null, $role = null)
+    {
+        $query = Appointment::select(
+                'service',
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy('service');
+
+        if ($areaId) {
+            $query->whereIn('farmer_id', function ($subQuery) use ($areaId) {
+                $subQuery->select('id')
+                    ->from('users')
+                    ->where('area_id', $areaId)
+                    ->where('role', 'Farmer');
+            });
+        }
+
+        if ($role === 'farmer') {
+            $query->where('farmer_id', Auth::id());
+        }
+
+        $serviceCounts = $query->get();
+
+        return $serviceCounts->toArray();
+    }
+
+
     public function printReport(Request $request){
         $data = $request->data;
         return Inertia::render('PrintComponent', ['data' => $data]);
     }
-
-
-    // Private functions
     
     private function getOverallStats()
-    {        
+    {   
         $animalData = $this->getAnimalDetails();
         $animalDistribution = $animalData['animalDistribution'];
         $totalAnimals = $animalData['totalAnimalCount'];
@@ -246,7 +349,7 @@ class ReportsController extends Controller
             'farmerDistribution' => $farmerDistribution,
             'animalDistribution' => $animalDistribution,
             'extensionOfficerCoverage' => $extensionOfficerCoverage,
-            // 'aiReport' => $aiReport,
+            'service_counts' => $this->getServiceCounts(),
         ];
         // ['candidates'][0]['content']['parts'][0]['text']
     }
@@ -308,56 +411,6 @@ class ReportsController extends Controller
         }
 
         return $animalDistribution;
-    }
-
-    private function generateReport($reportData) 
-    {
-        $apiKey = config('services.gemini.secret');
-
-        $payload = [
-            "contents" => [
-                [
-                    "role" => "user",
-                    "parts" => [
-                        [
-                            "text" => json_encode($reportData, JSON_PRETTY_PRINT)
-                        ]
-                    ]
-                ]
-            ],
-            "systemInstruction" => [
-                "role" => "user",
-                "parts" => [
-                    [
-                        "text" => "Respond with html styled with tailwind css. don't put the response in tripple backticks and no charts. Don't include the extensive details. Create a report with insights based on the provided information, showing key metrics and insights, as well as recommendations. Don't include the recent and upcoming appointments in the report. just use it to have deeper insights intot the data."
-                    ]
-                ]
-            ],
-            "generationConfig" => [
-                "temperature" => 0.3,
-                "topK" => 40,
-                "topP" => 0.95,
-                "maxOutputTokens" => 8192,
-                "responseMimeType" => "text/plain"
-            ]
-        ];
-
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", $payload);
-
-            $json_response = $response->json();
-
-            if ($response->successful()) {
-                return $json_response;
-            } else {
-                return ['error' => 'Failed to generate report'];
-            }
-            
-        } catch (\Throwable $th) {
-            return ['message' => 'Failed to generate report', 'error' => $th];
-        }
     }
 
 }

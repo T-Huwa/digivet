@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\PTest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PTestController extends Controller
 {
-    public function index()
-    {
-        $pTests = PTest::all();
-        return Inertia::render('PTests/Index', ['pTests' => $pTests]);
-    }
-
-    public function create()
-    {
-        return Inertia::render('PTests/Create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
             'animal_id' => 'required|string',
             'date_of_diagnosis' => 'required|date',
             'weight' => 'nullable|numeric',
@@ -45,12 +36,18 @@ class PTestController extends Controller
             'blood_test_results' => 'nullable|in:Normal,Abnormal',
             'blood_test_notes' => 'nullable|string',
             'additional_notes' => 'nullable|string',
-            'diagnosed_by' => 'required|string',
+            'diagnosed_by' => 'required|integer',
         ]);
 
         PTest::create($validated);
 
-        return redirect()->route('ptests.index')->with('message', 'Pregnancy test created successfully');
+        $appointment = Appointment::find($request->appointment_id);
+        if ($appointment) {
+            $appointment->status = "Completed";
+            $appointment->save();
+        }
+
+        return redirect()->route('appointments.get')->with('message', 'Pregnancy test created successfully');
     }
 
 }

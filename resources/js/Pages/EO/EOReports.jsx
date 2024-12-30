@@ -14,27 +14,115 @@ import {
     CalendarIcon,
     ChartPieIcon,
 } from "@heroicons/react/outline";
+import "jspdf-autotable";
 
 import DashboardLayout from "@/Layouts/dashboard";
 import SecondaryButton from "@/Components/SecondaryButton";
-import { Typography } from "@mui/material";
-import { Head, router } from "@inertiajs/react";
+import { Head} from "@inertiajs/react";
+import jsPDF from "jspdf";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export default function EOReports({ reportsData }) {
-    const aiResponse = reportsData.aiReport;
+    //const aiResponse = reportsData.aiReport;
 
-    const officerInfo = reportsData.officerInfo;
-    const farmerSummary = reportsData.farmerSummary;
-    const recentAppointments = reportsData.recentAppointments;
-    const upcomingAppointments = reportsData.upcomingAppointments;
-    const animalDistribution = reportsData.animalDistribution;
+    console.log(reportsData);
+    /*
+    const {
+        officer_info: officerInfo = {},
+        farmer_summary: farmerSummary = [],
+        recent_appointments: recentAppointments = [],
+        upcoming_appointments: upcomingAppointments = [],
+        animal_distribution: animalDistribution = [],
+    } = reportsData || {};*/
 
-    function printReport() {
-        const element = document.getElementById("reportToPrint");
-        window.print();
-    }
+    const officerInfo = reportsData.officerInfo || {};
+    const farmerSummary = reportsData.farmerSummary || {};
+    const recentAppointments = reportsData.recentAppointments || {};
+    const upcomingAppointments = reportsData.upcomingAppointments || {};
+    const animalDistribution = reportsData.animalDistribution || {};
+    const servicesCounts = reportsData.service_counts || {};
+
+    console.log(servicesCounts);
+
+    const exportPDF = () => {
+        const doc = new jsPDF();
+
+        //let lastY = 20;
+
+        doc.text("DigiVet Officer System Reports", 20, 10);
+
+        doc.text("Officer Information", 14, 20);
+        doc.autoTable({
+            head: [["Metric", "Value"]],
+            body: [
+                ["Name", officerInfo.name],
+                ["Area", officerInfo.area],
+                ["District", officerInfo.district],
+                ["Total Farmers", officerInfo.totalFarmers],
+                ["Total Animals", officerInfo.totalAnimals],
+            ],
+            startY: 25,
+        });
+
+        doc.text("Farmer Summary", 14, doc.lastAutoTable.finalY + 10);
+        doc.autoTable({
+            head: [["Animal Type", "Farmers Count"]],
+            body: farmerSummary.map((item) => [
+                item.animalType,
+                item.farmerCount,
+            ]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.text("Animal Distribution", 14, doc.lastAutoTable.finalY + 10);
+        doc.autoTable({
+            head: [["Animal Type", "Count"]],
+            body: animalDistribution.map((item) => [item.name, item.value]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.text("Appointment Servies", 14, doc.lastAutoTable.finalY + 10);
+        doc.autoTable({
+            head: [["Service", "Appointments Count"]],
+            body: servicesCounts.map((item) => [
+                item.service,
+                item.count,
+            ]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.save("DigiVet_Reports.pdf");
+    };
+
+    const exportCSV = () => {
+        const csvRows = [
+            ["Metric", "Value"],
+            ["Name", officerInfo.name],
+            ["Area", officerInfo.area],
+            ["District", officerInfo.district],
+            ["Total Farmers", officerInfo.total_farmers],
+            ["Total Animals", officerInfo.total_animals],
+            "",
+            ["Animal Type", "Farmer Count"],
+            ...farmerSummary.map((item) => [item.animal_type, item.farmer_count]),
+            "",
+            ["Animal Type", "Count"],
+            ...animalDistribution.map((item) => [item.name, item.value]),
+        ];
+
+        const csvContent = csvRows.map((row) => row.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.setAttribute("hidden", "");
+        a.setAttribute("href", url);
+        a.setAttribute("download", "DigiVet_Reports.csv");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     return (
         <DashboardLayout>
@@ -45,6 +133,16 @@ export default function EOReports({ reportsData }) {
                         <h1 className="flex-1 text-3xl font-bold text-gray-900 mb-8">
                             Extension Officer Report
                         </h1>
+                    </div>
+
+                    {/* Buttons for Export */}
+                    <div className="flex space-x-4 mb-8">
+                        <SecondaryButton onClick={exportPDF}>
+                            Export as PDF
+                        </SecondaryButton>
+                        <SecondaryButton onClick={exportCSV}>
+                            Export as CSV
+                        </SecondaryButton>
                     </div>
 
                     {/* Officer Information */}
@@ -240,128 +338,6 @@ export default function EOReports({ reportsData }) {
                     </div>
 
                     {/* <div class="p-6 my-8 bg-white shadow-md rounded-lg">
-                        <h1 class="text-2xl font-bold mb-4">
-                            DigiVet Analytics Report
-                        </h1>
-
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold">Overview</h2>
-                            <p class="text-gray-700">
-                                This report provides insights into the
-                                agricultural and veterinary market conditions
-                                across Malawi, focusing on distribution of
-                                farmers and livestock across different
-                                districts.
-                            </p>
-                            <p class="text-gray-700 mt-2">
-                                Total Farmers: 7,000
-                            </p>
-                        </div>
-
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold">Key Insights</h2>
-                            <ul class="list-disc pl-5 text-gray-700">
-                                <li>
-                                    The Northern region has the highest
-                                    concentration of farmers and livestock.
-                                </li>
-                                <li>
-                                    Mzimba district leads in farmer
-                                    registrations and livestock inventory.
-                                </li>
-                                <li>
-                                    Farmer registrations and activity are
-                                    primarily concentrated in urban areas.
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold">
-                                Recommendations
-                            </h2>
-                            <ul class="list-disc pl-5 text-gray-700">
-                                <li>
-                                    Focus outreach and veterinary services in
-                                    Mzimba to support the high farmer
-                                    concentration.
-                                </li>
-                                <li>
-                                    Expand veterinary support networks in rural
-                                    areas to improve service accessibility and
-                                    livestock health.
-                                </li>
-                                <li>
-                                    Introduce targeted animal husbandry tips and
-                                    seasonal advice for regions with lower
-                                    livestock counts.
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold">
-                                Detailed Data Table
-                            </h2>
-                            <table class="w-full mt-2 border border-gray-200">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-700">
-                                        <th class="py-2 px-4 border-b">
-                                            Region
-                                        </th>
-                                        <th class="py-2 px-4 border-b">
-                                            District
-                                        </th>
-                                        <th class="py-2 px-4 border-b">
-                                            Farmers
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">
-                                            Northern
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            Mzimba
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            1,500
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">
-                                            Central
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            Lilongwe
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            3,000
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">
-                                            Southern
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            Blantyre
-                                        </td>
-                                        <td class="py-2 px-4 border-b">
-                                            2,500
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <p class="text-gray-500 text-sm">
-                            This report was generated based on the most recent
-                            DigiVet data available.
-                        </p>
-                    </div> */}
-
-                    <div class="p-6 my-8 bg-white shadow-md rounded-lg">
                         <div className="flex">
                             <Typography className="flex-1">
                                 Insights and Overview
@@ -397,7 +373,7 @@ export default function EOReports({ reportsData }) {
                         )}
 
                         {aiResponse.message && aiResponse.message}
-                    </div>
+                    </div> */}
                     <br />
                 </div>
             </div>

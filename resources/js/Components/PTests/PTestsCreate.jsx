@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 const GESTATION_AGES = {
   Cattle: 283,
@@ -11,11 +11,11 @@ const GESTATION_AGES = {
   Rabbits: 31,
 };
 
-export default function PTestsCreate() {
+export default function PTestsCreate({id, userId, closeModal}) {
   const { errors } = usePage().props;
   const [values, setValues] = useState({
-      animal_id: '',
-      appointment_id: '',
+      animal_id: '8',
+      appointment_id: id,
     date_of_diagnosis: '',
     weight: '',
     body_condition_score: '',
@@ -38,8 +38,8 @@ export default function PTestsCreate() {
     blood_test_results: '',
     blood_test_notes: '',
     additional_notes: '',
-    diagnosed_by: '',
-  });
+    diagnosed_by: userId,
+  }); 
 
   function handleChange(e) {
     const key = e.target.id;
@@ -53,22 +53,16 @@ export default function PTestsCreate() {
 
 function handleSubmit(e) {
   e.preventDefault();
-  
-  const formData = new FormData();
-  for (const key in values) {
-    formData.append(key, values[key]);
-  }
 
-  axios.post(route('ptests.store'), formData)
-    .then(response => {
-      console.log('Data submitted successfully:', response.data);
-    })
-    .catch(error => {
+  router.post(route('ptests.store'), values, {
+    onSuccess: () => {
+      alert('Data submitted successfully');
+      closeModal();
+    },
+    onError: (error) => {
       console.error('Error submitting form:', error);
-      if (error.response && error.response.data.errors) {
-        setErrors(error.response.data.errors);
-      }
-    });
+    },
+  });
 }
 
   return (
@@ -77,11 +71,6 @@ function handleSubmit(e) {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-            <div>
-              <label htmlFor="animal_id" className="block text-sm font-medium text-gray-700">Animal ID</label>
-              <input type="text" id="animal_id" value={values.animal_id} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              {errors.animal_id && <div className="text-red-500 text-xs mt-1">{errors.animal_id}</div>}
-            </div> 
 
             <div>
               <label htmlFor="date_of_diagnosis" className="block text-sm font-medium text-gray-700">Date of Diagnosis</label>
@@ -317,18 +306,6 @@ function handleSubmit(e) {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               ></textarea>
               {errors.additional_notes && <div className="text-red-500 text-xs mt-1">{errors.additional_notes}</div>}
-            </div>
-
-            <div>
-              <label htmlFor="diagnosed_by" className="block text-sm font-medium text-gray-700">Diagnosed By</label>
-              <input type="text" id="diagnosed_by" value={values.diagnosed_by} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              {errors.diagnosed_by && <div className="text-red-500 text-xs mt-1">{errors.diagnosed_by}</div>}
-            </div>
-
-            <div className="col-span-2">
-              <label htmlFor="diagnosed_by" className="block text-sm font-medium text-gray-700">Diagnosed By</label>
-              <input type="text" id="diagnosed_by" value={values.diagnosed_by} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              {errors.diagnosed_by && <div className="text-red-500 text-xs mt-1">{errors.diagnosed_by}</div>}
             </div>
           </div>
 

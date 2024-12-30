@@ -32,15 +32,6 @@ class AnimalCastration extends Model
         'additional_notes',
     ];
 
-    protected $casts = [
-        'date_of_castration' => 'date',
-        'animal_age' => 'integer',
-        'duration_of_procedure' => 'integer',
-        'complications_observed' => 'boolean',
-        'follow_up_treatment_required' => 'boolean',
-        'post_procedure_monitoring' => 'boolean',
-    ];
-
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
@@ -51,4 +42,3 @@ class AnimalCastration extends Model
         return $this->belongsTo(User::class, 'castration_officer_id');
     }
 }
-

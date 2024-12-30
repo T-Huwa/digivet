@@ -22,11 +22,6 @@ import SecondaryButton from "@/Components/SecondaryButton";
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export default function Reports({ report }) {
-    const componentRef = useRef();
-
-    const printReport = () => {
-        window.print();
-    };
 
     //const aiReport = report.aiReport;
 
@@ -35,6 +30,7 @@ export default function Reports({ report }) {
         farmerDistribution,
         animalDistribution,
         extensionOfficerCoverage,
+        service_counts,
     } = report;
 
     const exportPDF = () => {
@@ -83,6 +79,16 @@ export default function Reports({ report }) {
                 item.name,
                 item.farmers,
                 item.officerName || "N/A",
+            ]),
+            startY: doc.lastAutoTable.finalY + 15,
+        });
+
+        doc.text("Servies Provided", 14, doc.lastAutoTable.finalY + 10);
+        doc.autoTable({
+            head: [["Service", "Appointments Count"]],
+            body: service_counts.map((item) => [
+                item.service,
+                item.count,
             ]),
             startY: doc.lastAutoTable.finalY + 15,
         });

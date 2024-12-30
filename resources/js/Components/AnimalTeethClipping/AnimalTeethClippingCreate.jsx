@@ -1,395 +1,401 @@
+import { router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import axios from 'axios';
-import { TextField, MenuItem, Select, Checkbox, FormControl, InputLabel, Button, FormControlLabel, Grid, Typography } from '@mui/material';
 
-const AnimalTeethClippingCreate = ({id, userId}) => {
-    const [formData, setFormData] = useState({
-        appointment_id: id,
-        animal_id: '',
-        date_of_teeth_clipping: '',
-        animal_age: '',
-        age_unit: 'Months',
-        sex_of_animal: 'Male',
-        teeth_condition: 'Healthy',
-        teeth_condition_notes: '',
-        teeth_clipping_method: 'Manual',
-        teeth_clipping_procedure: 'Full Clip',
-        veterinarian_id: userId,
-        clipping_tools: 'Scissors',
-        other_clipping_tool: '',
-        pain_management_applied: false,
-        pain_management_type: '',
-        clipping_outcome: 'Successful',
-        outcome_notes: '',
-        follow_up_required: false,
-        follow_up_action: '',
-        follow_up_date: '',
-        animal_health_condition: 'Healthy',
-        health_condition_details: '',
-        additional_notes: '',
-        anesthetic_used: false,
-        anesthetic_type: '',
-        duration_of_procedure: '',
-        procedure_cost: '',
-        responsible_staff: userId,
-    });
+const AnimalTeethClippingCreate = ({ id, userId, closeModal }) => {
+  const [values, setValues] = useState({
+    appointment_id: id,
+    animal_id: 6,
+    date_of_teeth_clipping: '',
+    animal_age: '',
+    age_unit: 'Months',
+    sex_of_animal: 'Male',
+    teeth_condition: 'Healthy',
+    teeth_condition_notes: '',
+    teeth_clipping_method: 'Manual',
+    teeth_clipping_procedure: 'Full Clip',
+    veterinarian_id: userId,
+    clipping_tools: 'Scissors',
+    other_clipping_tool: '',
+    pain_management_applied: false,
+    pain_management_type: '',
+    clipping_outcome: 'Successful',
+    outcome_notes: '',
+    follow_up_required: false,
+    follow_up_action: '',
+    follow_up_date: '',
+    animal_health_condition: 'Healthy',
+    health_condition_details: '',
+    additional_notes: '',
+    anesthetic_used: false,
+    anesthetic_type: '',
+    duration_of_procedure: '',
+    procedure_cost: '',
+    responsible_staff: userId,
+  });
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
-    };
+  const [errors, setErrors] = useState({});
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('/animal-teeth-clippings', formData);
-            alert('Animal teeth clipping record created successfully');
-            console.log(response.data);
-        } catch (error) {
-            console.error(error);
-            alert('Error creating record. Please check your input.');
+  const handleChange = ({ target: { id, type, value, checked } }) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      [id]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    router.post(route('animal-teeth-clippings.store'), values, {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+          alert('Animal teeth clipping record created successfully');
+          closeModal();
+      },
+        onError: (errors) => {
+          console.log(errors);
+          
+        setErrors(errors);
         }
-    };
+    });
+  };
 
-    return (
-        <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-xl mx-auto">
-            <Typography variant="h5" className="mb-4">Animal Teeth Clipping</Typography>
-            
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Animal ID"
-                        name="animal_id"
-                        value={formData.animal_id}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-            </Grid>
+  return (
+    <div className="max-w-4xl mx-auto py-10 sm:px-6 lg:px-8">
+      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold mb-6">Create Animal Teeth Clipping Record</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date_of_teeth_clipping">
+            Date of Teeth Clipping
+          </label>
+          <input
+            type="date"
+            id="date_of_teeth_clipping"
+            value={values.date_of_teeth_clipping}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {errors.date_of_teeth_clipping && <p className="text-red-500 text-xs italic">{errors.date_of_teeth_clipping}</p>}
+        </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Date of Teeth Clipping"
-                        name="date_of_teeth_clipping"
-                        type="date"
-                        value={formData.date_of_teeth_clipping}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Animal Age"
-                        name="animal_age"
-                        type="number"
-                        value={formData.animal_age}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-            </Grid>
+  <div>
+    <label htmlFor="teeth_condition_notes" className="block text-sm font-medium text-gray-700">
+      Teeth Condition Notes
+    </label>
+    <textarea
+      id="teeth_condition_notes"
+      value={values.teeth_condition_notes}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    ></textarea>
+    {errors.teeth_condition_notes && <p className="text-red-500 text-xs italic">{errors.teeth_condition_notes}</p>}
+  </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Age Unit</InputLabel>
-                        <Select
-                            name="age_unit"
-                            value={formData.age_unit}
-                            onChange={handleChange}
-                            label="Age Unit"
-                        >
-                            <MenuItem value="Months">Months</MenuItem>
-                            <MenuItem value="Years">Years</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Sex of Animal</InputLabel>
-                        <Select
-                            name="sex_of_animal"
-                            value={formData.sex_of_animal}
-                            onChange={handleChange}
-                            label="Sex of Animal"
-                        >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
+  <div>
+    <label htmlFor="pain_management_type" className="block text-sm font-medium text-gray-700">
+      Pain Management Type
+    </label>
+    <input
+      type="text"
+      id="pain_management_type"
+      value={values.pain_management_type}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.pain_management_type && <p className="text-red-500 text-xs italic">{errors.pain_management_type}</p>}
+  </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Teeth Condition</InputLabel>
-                        <Select
-                            name="teeth_condition"
-                            value={formData.teeth_condition}
-                            onChange={handleChange}
-                            label="Teeth Condition"
-                        >
-                            <MenuItem value="Healthy">Healthy</MenuItem>
-                            <MenuItem value="Overgrown">Overgrown</MenuItem>
-                            <MenuItem value="Damaged">Damaged</MenuItem>
-                            <MenuItem value="Infected">Infected</MenuItem>
-                            <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                {formData.teeth_condition === 'Other' && (
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Teeth Condition Notes"
-                            name="teeth_condition_notes"
-                            value={formData.teeth_condition_notes}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                        />
-                    </Grid>
-                )}
-            </Grid>
+  <div>
+    <label htmlFor="clipping_outcome" className="block text-sm font-medium text-gray-700">
+      Clipping Outcome
+    </label>
+    <select
+      id="clipping_outcome"
+      value={values.clipping_outcome}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Successful">Successful</option>
+      <option value="Unsuccessful">Unsuccessful</option>
+    </select>
+    {errors.clipping_outcome && <p className="text-red-500 text-xs italic">{errors.clipping_outcome}</p>}
+  </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Teeth Clipping Method</InputLabel>
-                        <Select
-                            name="teeth_clipping_method"
-                            value={formData.teeth_clipping_method}
-                            onChange={handleChange}
-                            label="Teeth Clipping Method"
-                        >
-                            <MenuItem value="Manual">Manual</MenuItem>
-                            <MenuItem value="Mechanical">Mechanical</MenuItem>
-                            <MenuItem value="Electric">Electric</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Teeth Clipping Procedure</InputLabel>
-                        <Select
-                            name="teeth_clipping_procedure"
-                            value={formData.teeth_clipping_procedure}
-                            onChange={handleChange}
-                            label="Teeth Clipping Procedure"
-                        >
-                            <MenuItem value="Full Clip">Full Clip</MenuItem>
-                            <MenuItem value="Partial Clip">Partial Clip</MenuItem>
-                            <MenuItem value="Grinding">Grinding</MenuItem>
-                            <MenuItem value="Shaping">Shaping</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
+  <div>
+    <label htmlFor="follow_up_action" className="block text-sm font-medium text-gray-700">
+      Follow-Up Action
+    </label>
+    <textarea
+      id="follow_up_action"
+      value={values.follow_up_action}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    ></textarea>
+    {errors.follow_up_action && <p className="text-red-500 text-xs italic">{errors.follow_up_action}</p>}
+  </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Veterinarian ID"
-                        name="veterinarian_id"
-                        value={formData.veterinarian_id}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required>
-                        <InputLabel>Clipping Tools</InputLabel>
-                        <Select
-                            name="clipping_tools"
-                            value={formData.clipping_tools}
-                            onChange={handleChange}
-                            label="Clipping Tools"
-                        >
-                            <MenuItem value="Scissors">Scissors</MenuItem>
-                            <MenuItem value="Clippers">Clippers</MenuItem>
-                            <MenuItem value="Grinder">Grinder</MenuItem>
-                            <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-            {formData.clipping_tools === 'Other' && (
-                <Grid item xs={12}>
-                    <TextField
-                        label="Other Clipping Tool"
-                        name="other_clipping_tool"
-                        value={formData.other_clipping_tool}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-            )}
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+  <div>
+    <label htmlFor="animal_age" className="block text-sm font-medium text-gray-700">
+      Animal Age
+    </label>
+    <input
+      type="number"
+      id="animal_age"
+      value={values.animal_age}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.animal_age && <p className="text-red-500 text-xs italic">{errors.animal_age}</p>}
+  </div>
 
-            <FormControlLabel
-                control={<Checkbox name="pain_management_applied" checked={formData.pain_management_applied} onChange={handleChange} />}
-                label="Pain Management Applied"
-            />
-            {formData.pain_management_applied && (
-                <TextField
-                    label="Pain Management Type"
-                    name="pain_management_type"
-                    value={formData.pain_management_type}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                />
-            )}
+  <div>
+    <label htmlFor="age_unit" className="block text-sm font-medium text-gray-700">
+      Age Unit
+    </label>
+    <select
+      id="age_unit"
+      value={values.age_unit}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Days">Days</option>
+      <option value="Months">Months</option>
+      <option value="Years">Years</option>
+    </select>
+    {errors.age_unit && <p className="text-red-500 text-xs italic">{errors.age_unit}</p>}
+  </div>
 
-            <FormControl fullWidth required>
-                <InputLabel>Clipping Outcome</InputLabel>
-                <Select
-                    name="clipping_outcome"
-                    value={formData.clipping_outcome}
-                    onChange={handleChange}
-                    label="Clipping Outcome"
-                >
-                    <MenuItem value="Successful">Successful</MenuItem>
-                    <MenuItem value="Partial">Partial</MenuItem>
-                    <MenuItem value="Failed">Failed</MenuItem>
-                </Select>
-            </FormControl>
+  <div>
+    <label htmlFor="sex_of_animal" className="block text-sm font-medium text-gray-700">
+      Sex of Animal
+    </label>
+    <select
+      id="sex_of_animal"
+      value={values.sex_of_animal}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+    {errors.sex_of_animal && <p className="text-red-500 text-xs italic">{errors.sex_of_animal}</p>}
+  </div>
 
-            <TextField
-                label="Outcome Notes"
-                name="outcome_notes"
-                value={formData.outcome_notes}
-                onChange={handleChange}
-                multiline
-                rows={3}
-                fullWidth
-            />
+  <div>
+    <label htmlFor="teeth_condition" className="block text-sm font-medium text-gray-700">
+      Teeth Condition
+    </label>
+    <select
+      id="teeth_condition"
+      value={values.teeth_condition}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Healthy">Healthy</option>
+      <option value="Damaged">Damaged</option>
+      <option value="Broken">Broken</option>
+    </select>
+    {errors.teeth_condition && <p className="text-red-500 text-xs italic">{errors.teeth_condition}</p>}
+  </div>
 
-            <FormControlLabel
-                control={<Checkbox name="follow_up_required" checked={formData.follow_up_required} onChange={handleChange} />}
-                label="Follow-up Required"
-            />
-            {formData.follow_up_required && (
-                <>
-                    <TextField
-                        label="Follow-up Action"
-                        name="follow_up_action"
-                        value={formData.follow_up_action}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                    <TextField
-                        label="Follow-up Date"
-                        name="follow_up_date"
-                        type="date"
-                        value={formData.follow_up_date}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </>
-            )}
+  <div>
+    <label htmlFor="teeth_clipping_method" className="block text-sm font-medium text-gray-700">
+      Teeth Clipping Method
+    </label>
+    <select
+      id="teeth_clipping_method"
+      value={values.teeth_clipping_method}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Manual">Manual</option>
+      <option value="Electric">Electric</option>
+    </select>
+    {errors.teeth_clipping_method && <p className="text-red-500 text-xs italic">{errors.teeth_clipping_method}</p>}
+  </div>
 
-            <FormControl fullWidth required>
-                <InputLabel>Animal Health Condition</InputLabel>
-                <Select
-                    name="animal_health_condition"
-                    value={formData.animal_health_condition}
-                    onChange={handleChange}
-                    label="Animal Health Condition"
-                >
-                    <MenuItem value="Healthy">Healthy</MenuItem>
-                    <MenuItem value="Sick">Sick</MenuItem>
-                    <MenuItem value="Injured">Injured</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                </Select>
-            </FormControl>
+  <div>
+    <label htmlFor="teeth_clipping_procedure" className="block text-sm font-medium text-gray-700">
+      Teeth Clipping Procedure
+    </label>
+    <select
+      id="teeth_clipping_procedure"
+      value={values.teeth_clipping_procedure}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Full Clip">Full Clip</option>
+      <option value="Partial Clip">Partial Clip</option>
+    </select>
+    {errors.teeth_clipping_procedure && <p className="text-red-500 text-xs italic">{errors.teeth_clipping_procedure}</p>}
+  </div>
 
-            {formData.animal_health_condition === 'Other' && (
-                <TextField
-                    label="Health Condition Details"
-                    name="health_condition_details"
-                    value={formData.health_condition_details}
-                    onChange={handleChange}
-                    multiline
-                    rows={3}
-                    fullWidth
-                />
-            )}
+  <div>
+    <label htmlFor="clipping_tools" className="block text-sm font-medium text-gray-700">
+      Clipping Tools
+    </label>
+    <input
+      type="text"
+      id="clipping_tools"
+      value={values.clipping_tools}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.clipping_tools && <p className="text-red-500 text-xs italic">{errors.clipping_tools}</p>}
+  </div>
 
-            <TextField
-                label="Additional Notes"
-                name="additional_notes"
-                value={formData.additional_notes}
-                onChange={handleChange}
-                multiline
-                rows={3}
-                fullWidth
-            />
+  <div>
+    <label htmlFor="other_clipping_tool" className="block text-sm font-medium text-gray-700">
+      Other Clipping Tool (if any)
+    </label>
+    <input
+      type="text"
+      id="other_clipping_tool"
+      value={values.other_clipping_tool}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.other_clipping_tool && <p className="text-red-500 text-xs italic">{errors.other_clipping_tool}</p>}
+  </div>
 
-            <FormControlLabel
-                control={<Checkbox name="anesthetic_used" checked={formData.anesthetic_used} onChange={handleChange} />}
-                label="Anesthetic Used"
-            />
-            {formData.anesthetic_used && (
-                <TextField
-                    label="Anesthetic Type"
-                    name="anesthetic_type"
-                    value={formData.anesthetic_type}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                />
-            )}
+  <div>
+    <label htmlFor="animal_health_condition" className="block text-sm font-medium text-gray-700">
+      Animal Health Condition
+    </label>
+    <select
+      id="animal_health_condition"
+      value={values.animal_health_condition}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option value="Healthy">Healthy</option>
+      <option value="Unhealthy">Unhealthy</option>
+    </select>
+    {errors.animal_health_condition && <p className="text-red-500 text-xs italic">{errors.animal_health_condition}</p>}
+  </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Duration of Procedure (minutes)"
-                        name="duration_of_procedure"
-                        type="number"
-                        value={formData.duration_of_procedure}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Procedure Cost"
-                        name="procedure_cost"
-                        type="number"
-                        value={formData.procedure_cost}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-            </Grid>
+  <div>
+    <label htmlFor="health_condition_details" className="block text-sm font-medium text-gray-700">
+      Health Condition Details
+    </label>
+    <textarea
+      id="health_condition_details"
+      value={values.health_condition_details}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    ></textarea>
+    {errors.health_condition_details && <p className="text-red-500 text-xs italic">{errors.health_condition_details}</p>}
+  </div>
 
-            <TextField
-                label="Responsible Staff"
-                name="responsible_staff"
-                value={formData.responsible_staff}
-                onChange={handleChange}
-                fullWidth
-                required
-            />
+  <div>
+    <label htmlFor="outcome_notes" className="block text-sm font-medium text-gray-700">
+      Outcome Notes
+    </label>
+    <textarea
+      id="outcome_notes"
+      value={values.outcome_notes}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    ></textarea>
+    {errors.outcome_notes && <p className="text-red-500 text-xs italic">{errors.outcome_notes}</p>}
+  </div>
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-                Submit
-            </Button>
-        </form>
-    );
+  <div>
+    <label htmlFor="follow_up_date" className="block text-sm font-medium text-gray-700">
+      Follow-Up Date
+    </label>
+    <input
+      type="date"
+      id="follow_up_date"
+      value={values.follow_up_date}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.follow_up_date && <p className="text-red-500 text-xs italic">{errors.follow_up_date}</p>}
+  </div>
+
+  <div>
+    <label htmlFor="additional_notes" className="block text-sm font-medium text-gray-700">
+      Additional Notes
+    </label>
+    <textarea
+      id="additional_notes"
+      value={values.additional_notes}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    ></textarea>
+    {errors.additional_notes && <p className="text-red-500 text-xs italic">{errors.additional_notes}</p>}
+  </div>
+
+  <div>
+    <label htmlFor="duration_of_procedure" className="block text-sm font-medium text-gray-700">
+      Duration of Procedure (in minutes)
+    </label>
+    <input
+      type="number"
+      id="duration_of_procedure"
+      value={values.duration_of_procedure}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.duration_of_procedure && <p className="text-red-500 text-xs italic">{errors.duration_of_procedure}</p>}
+  </div>
+
+  <div>
+    <label htmlFor="procedure_cost" className="block text-sm font-medium text-gray-700">
+      Procedure Cost
+    </label>
+    <input
+      type="number"
+      id="procedure_cost"
+      value={values.procedure_cost}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.procedure_cost && <p className="text-red-500 text-xs italic">{errors.procedure_cost}</p>}
+  </div>
+
+  <div>
+    <label htmlFor="anesthetic_used" className="block text-sm font-medium text-gray-700">
+      Anesthetic Used
+    </label>
+    <input
+      type="checkbox"
+      id="anesthetic_used"
+      checked={values.anesthetic_used}
+      onChange={handleChange}
+      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+    />
+    {errors.anesthetic_used && <p className="text-red-500 text-xs italic">{errors.anesthetic_used}</p>}
+  </div>
+
+  <div>
+    <label htmlFor="anesthetic_type" className="block text-sm font-medium text-gray-700">
+      Anesthetic Type
+    </label>
+    <input
+      type="text"
+      id="anesthetic_type"
+      value={values.anesthetic_type}
+      onChange={handleChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    />
+    {errors.anesthetic_type && <p className="text-red-500 text-xs italic">{errors.anesthetic_type}</p>}
+  </div>
+</div>
+
+
+        <div className="flex items-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Create Teeth Clipping Record
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default AnimalTeethClippingCreate;

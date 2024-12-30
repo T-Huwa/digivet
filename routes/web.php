@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\AiAPIController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AnimalCastrationController;
+use App\Http\Controllers\AnimalDippingController;
+use App\Http\Controllers\AnimalTeethClippingController;
 use App\Http\Controllers\AnimalTreatmentController;
+use App\Http\Controllers\AnimalVaccinationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -18,6 +22,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SmsTwilioController;
 use App\Http\Controllers\TipController;
+use App\Models\AnimalCastration;
 use App\Models\Tip;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -113,13 +118,19 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/ptests', [PTestController::class, 'index'])->name('ptests.index');
-    Route::get('/ptests/create', [PTestController::class, 'create'])->name('ptests.create');
     Route::post('/ptests', [PTestController::class, 'store'])->name('ptests.store');
 
     Route::post('/khola', [KholaBuildingController::class, 'store'])->name('khola.store');
 });
 
-Route::get('/animal-treatments', [AnimalTreatmentController::class, 'index']);
+Route::post('/animal-dippings', [AnimalDippingController::class, 'store']);
+Route::post('/animal-treatments', [AnimalTreatmentController::class, 'store'])->name('animal-treatments.store');
+Route::post('/animal-teeth-clipping', [AnimalTeethClippingController::class, 'store'])->name('animal-teeth-clippings.store');
+
+Route::post('/animal-castrations', [AnimalCastrationController::class, 'store'])->name('animal-castrations.store');
+
+Route::post('/animal-vaccinations', [AnimalVaccinationController::class, 'store'])->name('animal-vaccinations.store');
+
+Route::post('/animal-tagging', [AnimalVaccinationController::class, 'store'])->name('animal-ear-taggings.store');
 
 require __DIR__.'/auth.php';
